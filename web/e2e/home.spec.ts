@@ -74,15 +74,32 @@ test("demo choropleth has at least one data-bin country", async ({ page }) => {
   );
 });
 
-test("clicking a filled country opens the detail stub", async ({ page }) => {
+test("clicking a filled country opens the detail drawer", async ({ page }) => {
   await page.goto("/");
   const usa = page.locator('path[data-iso3="USA"][data-fill-kind="bin"]');
   await expect(usa).toBeVisible({ timeout: 30_000 });
   await usa.click();
   const drawer = page.getByTestId("country-drawer");
   await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveAttribute("data-iso3", "USA");
+  await expect(drawer).toContainText("United States");
   await expect(drawer).toContainText("Estimated share modeled at IQ ≥ 130");
-  await expect(drawer).toContainText("This is a model output, not a count.");
+  await expect(drawer.getByTestId("formula-block")).toHaveText(
+    "1 − Φ((130 − 100) / 15) = 2.28%",
+  );
+  await expect(drawer.getByTestId("drawer-band")).toHaveAttribute(
+    "data-band-kind",
+    "pm3",
+  );
+  await expect(drawer.getByTestId("drawer-band")).toContainText(
+    "not a statistical confidence interval",
+  );
+  await expect(drawer.getByTestId("model-sensitivity")).toHaveCount(0);
+  await expect(drawer).toContainText("not a census");
+  await expect(drawer).toContainText("not a ranking");
+  await expect(drawer).not.toContainText("2.275%");
+  await drawer.getByRole("button", { name: "Close" }).click();
+  await expect(drawer).toHaveCount(0);
 });
 
 test("home copy avoids ranking chrome", async ({ page }) => {
@@ -128,7 +145,9 @@ test("CSV download is modeled estimates, not a ranking file", async ({
   expect(text).not.toContain("p_hat_pct");
 });
 
-test("country name click selects the row", async ({ page }) => {
+test("country name click selects the row and opens the drawer", async ({
+  page,
+}) => {
   await page.goto("/");
   const table = page.getByTestId("filtered-ok-rows");
   await expect(table).toBeVisible({ timeout: 30_000 });
@@ -137,6 +156,10 @@ test("country name click selects the row", async ({ page }) => {
   expect(iso3).toBeTruthy();
   await first.getByRole("button").click();
   await expect(first).toHaveAttribute("data-selected", "true");
+  const drawer = page.getByTestId("country-drawer");
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveAttribute("data-iso3", iso3!);
+  await expect(drawer.getByTestId("formula-block")).toBeVisible();
 });
 
 test("lollipop binds percent shares and the 2.28% reference", async ({
@@ -166,5 +189,19 @@ test("lollipop binds percent shares and the 2.28% reference", async ({
   await expect(heads).toHaveCount(n);
   await expect(heads.first()).toHaveAttribute("data-quality", "C");
   await expect(heads.first()).toHaveAttribute("fill", "#ffffff");
+});
+
+test("lollipop row click opens the country drawer", async ({ page }) => {
+  await page.goto("/");
+  const chart = page.getByTestId("lollipop");
+  await expect(chart).toBeVisible({ timeout: 30_000 });
+  const head = chart.locator("[data-testid='lollipop-head']").first();
+  await expect(head).toBeVisible();
+  const iso3 = await head.getAttribute("data-iso3");
+  expect(iso3).toBeTruthy();
+  await head.click();
+  const drawer = page.getByTestId("country-drawer");
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toHaveAttribute("data-iso3", iso3!);
 });
 

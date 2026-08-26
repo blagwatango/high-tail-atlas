@@ -79,8 +79,10 @@ function LollipopStem(props: BarShapeProps) {
   );
 }
 
-function LollipopHead(props: ScatterShapeProps) {
-  const { cx, cy, payload } = props;
+function LollipopHead(
+  props: ScatterShapeProps & { onSelectIso3?: (iso3: string) => void },
+) {
+  const { cx, cy, payload, onSelectIso3 } = props;
   const row = payload as LollipopRow | undefined;
   if (cx == null || cy == null || row == null) return <g />;
   const hollow = isHollowHead(row.quality);
@@ -92,9 +94,11 @@ function LollipopHead(props: ScatterShapeProps) {
       fill={hollow ? "#ffffff" : row.fill}
       stroke={row.fill}
       strokeWidth={hollow ? 2 : 1}
+      style={{ cursor: "pointer" }}
       data-testid="lollipop-head"
       data-iso3={row.iso3}
       data-quality={row.quality ?? ""}
+      onClick={() => onSelectIso3?.(row.iso3)}
     />
   );
 }
@@ -126,12 +130,27 @@ function EstimateTooltip({ active, payload }: TooltipContentProps) {
   );
 }
 
+function iso3FromChartClick(data: unknown): string | null {
+  if (data == null || typeof data !== "object") return null;
+  const rec = data as { iso3?: unknown; payload?: { iso3?: unknown } };
+  if (typeof rec.iso3 === "string") return rec.iso3;
+  if (typeof rec.payload?.iso3 === "string") return rec.payload.iso3;
+  return null;
+}
+
 type LollipopChartProps = {
   countries: CountryRecord[];
   sort: SortKey;
+  selectedIso3?: string | null;
+  onSelectIso3?: (iso3: string) => void;
 };
 
-export function LollipopChart({ countries, sort }: LollipopChartProps) {
+export function LollipopChart({
+  countries,
+  sort,
+  selectedIso3,
+  onSelectIso3,
+}: LollipopChartProps) {
   const [showAll, setShowAll] = useState(false);
 
   const rows = useMemo(() => {
@@ -181,6 +200,24 @@ export function LollipopChart({ countries, sort }: LollipopChartProps) {
                 data={visible}
                 margin={{ top: 16, right: 36, bottom: 48, left: 120 }}
                 barCategoryGap={8}
+                style={{ cursor: "pointer" }}
+                onClick={(state) => {
+                  const index =
+                    typeof state.activeIndex === "number"
+                      ? state.activeIndex
+                      : typeof state.activeIndex === "string"
+                        ? Number(state.activeIndex)
+                        : Number.NaN;
+                  if (Number.isInteger(index) && visible[index]) {
+                    onSelectIso3?.(visible[index].iso3);
+                    return;
+                  }
+                  const label = state.activeLabel;
+                  if (typeof label === "string") {
+                    const row = visible.find((r) => r.name === label);
+                    if (row) onSelectIso3?.(row.iso3);
+                  }
+                }}
               >
                 <XAxis
                   type="number"
@@ -212,12 +249,22 @@ export function LollipopChart({ countries, sort }: LollipopChartProps) {
                   legendType="none"
                   isAnimationActive={false}
                   shape={LollipopStem}
+                  onClick={(data) => {
+                    const iso3 = iso3FromChartClick(data);
+                    if (iso3) onSelectIso3?.(iso3);
+                  }}
                 />
                 <Scatter
                   dataKey="p_pct"
                   legendType="none"
                   isAnimationActive={false}
-                  shape={LollipopHead}
+                  shape={(props) => (
+                    <LollipopHead {...props} onSelectIso3={onSelectIso3} />
+                  )}
+                  onClick={(data) => {
+                    const iso3 = iso3FromChartClick(data);
+                    if (iso3) onSelectIso3?.(iso3);
+                  }}
                 />
                 <Tooltip
                   content={EstimateTooltip}
@@ -234,8 +281,11 @@ export function LollipopChart({ countries, sort }: LollipopChartProps) {
                 data-iso3={row.iso3}
                 data-p-pct={row.p_pct}
                 data-quality={row.quality ?? ""}
+                data-selected={selectedIso3 === row.iso3 ? "true" : "false"}
               >
-                {row.name}: {formatPHat(row.p_hat, row.quality, "map")}
+                <button type="button" onClick={() => onSelectIso3?.(row.iso3)}>
+                  {row.name}: {formatPHat(row.p_hat, row.quality, "map")}
+                </button>
               </li>
             ))}
           </ol>

@@ -11,9 +11,9 @@ import {
   statusLine,
   uniqueSorted,
 } from "@/lib/filters";
-import { formatPHat } from "@/lib/format";
 import { AtlasFile } from "@/lib/schema";
 import { dashboardParsers } from "@/lib/url-state";
+import { CountryDrawer } from "./CountryDrawer";
 import { CountryTable } from "./CountryTable";
 import { FilterBar } from "./FilterBar";
 import { LollipopChart } from "./LollipopChart";
@@ -152,6 +152,11 @@ export function Dashboard() {
         {line}
       </p>
 
+      <CountryDrawer
+        country={selected}
+        onClose={() => setSelectedIso3(null)}
+      />
+
       <section
         aria-labelledby="map-heading"
         className="rounded-md border border-stone-200 bg-white p-4"
@@ -165,43 +170,18 @@ export function Dashboard() {
           selectedIso3={selectedIso3}
           onSelect={setSelectedIso3}
         />
-        {selected ? (
-          <aside
-            data-testid="country-drawer"
-            aria-label="Country detail"
-            className="mt-3 rounded border border-stone-200 bg-stone-50 p-3 text-sm"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="font-medium">
-                {selected.name}{" "}
-                <span className="font-mono text-xs text-stone-500">
-                  {selected.iso3}
-                </span>
-              </h3>
-              <button
-                type="button"
-                className="rounded border border-stone-300 bg-white px-2 py-0.5 text-xs hover:bg-stone-100"
-                onClick={() => setSelectedIso3(null)}
-              >
-                Close
-              </button>
-            </div>
-            <p className="mt-2">
-              Estimated share modeled at IQ ≥ 130:{" "}
-              {formatPHat(selected.p_hat, selected.quality, "drawer")}
-            </p>
-            <p className="mt-1 text-stone-600">
-              This is a model output, not a count.
-            </p>
-          </aside>
-        ) : null}
       </section>
 
       <section
         aria-labelledby="lollipop-heading"
         className="rounded-md border border-dashed border-stone-300 bg-white p-4"
       >
-        <LollipopChart countries={shown} sort={filters.sort} />
+        <LollipopChart
+          countries={shown}
+          sort={filters.sort}
+          selectedIso3={selectedIso3}
+          onSelectIso3={setSelectedIso3}
+        />
       </section>
 
       <section
