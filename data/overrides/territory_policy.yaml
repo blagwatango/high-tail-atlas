@@ -6,13 +6,15 @@ inherit_mu_to_disputed: false
 omit_from_choropleth:
   - ATA
 excluded_territory_iso3: []
-# Placeholders until the NE 5.1.1 disputed/breakaway join (PR 8).
-# Direct estimate rows for these ADM0_A3 codes still win; inheritance does not.
+# NE 5.1.1 Admin 0 1:110m ADM0_A3 codes that must not inherit a sovereign μ.
+# Direct estimate rows still win. B57 and KAS are not 110m polygons (10m placeholders).
 disputed_no_estimate_adm0_a3:
   - B57
   - KAS
   - CYN
   - SAH
+  - SOL
+  - KOS
 notes: >
   Natural Earth de facto Admin 0. Disputed / breakaway polygons do not
   inherit a sovereign μ. A BYO row whose iso3/ADM0_A3 matches the feature

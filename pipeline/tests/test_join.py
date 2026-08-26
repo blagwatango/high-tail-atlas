@@ -41,6 +41,7 @@ def test_union_frame_has_ok_and_no_estimate():
     assert by_iso["AFG"]["p_hat"] is None
     assert by_iso["NRU"]["tiny_population"] is True
     assert by_iso["USA"]["tiny_population"] is False
+    # Geometry is optional on this helper; without an index every row is false.
     assert all(row["has_geometry"] is False for row in joined.countries)
 
 

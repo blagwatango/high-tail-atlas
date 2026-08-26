@@ -69,6 +69,7 @@ def test_build_demo_parses_as_atlas_file(tmp_path: Path):
         "demo_badge": True,
     }
     assert manifest["estimates_source"]["name"] == "DEMO_FIXTURE"
+    assert manifest["geometry_source"].startswith("Natural Earth")
     assert manifest["assumptions"] == list(ASSUMPTIONS)
     assert set(manifest["n_quality"]) == {"A", "B", "C", "D", "E", "U"}
     assert manifest["n_quality"]["C"] == manifest["n_ok"] == 24
@@ -78,7 +79,7 @@ def test_build_demo_parses_as_atlas_file(tmp_path: Path):
     by_iso = {row["iso3"]: row for row in atlas["countries"]}
     for iso3 in COVERAGE_ISO3:
         assert by_iso[iso3]["status"] == "ok"
-        assert by_iso[iso3]["has_geometry"] is False
+        assert by_iso[iso3]["has_geometry"] is True
     usa = by_iso["USA"]
     assert usa["p_hat"] == pytest.approx(GOLDEN_SF2, abs=1e-12)
     assert usa["p_hat"] == pytest.approx(tail_p(100, 15), abs=1e-12)
@@ -86,7 +87,9 @@ def test_build_demo_parses_as_atlas_file(tmp_path: Path):
     assert usa["p_hi_pm3"] is not None
     assert usa["p_lo_se"] is None
     assert usa["source_short"] == "DEMO"
-    assert all(row["has_geometry"] is False for row in atlas["countries"])
+    assert usa["has_geometry"] is True
+    assert "ATA" not in by_iso
+    assert atlas["manifest"]["n_no_iso"] >= 1
     parsed = json.loads(out.read_text(encoding="utf-8"))
     assert parsed["manifest"]["n_ok"] == 24
 
@@ -182,6 +185,9 @@ def test_committed_atlas_json():
     by_iso = {row["iso3"]: row for row in atlas["countries"]}
     for iso3 in COVERAGE_ISO3:
         assert by_iso[iso3]["status"] == "ok"
-    assert all(row["has_geometry"] is False for row in atlas["countries"])
+        assert by_iso[iso3]["has_geometry"] is True
+    assert by_iso["USA"]["has_geometry"] is True
+    assert "ATA" not in by_iso
     assert atlas["unmatched_estimates"] == []
     assert RFC3339.match(atlas["manifest"]["created_at"])
+    assert atlas["manifest"]["geometry_source"].startswith("Natural Earth")

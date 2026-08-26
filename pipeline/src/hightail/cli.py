@@ -120,7 +120,7 @@ def _build_parser() -> argparse.ArgumentParser:
     build_parser.add_argument(
         "--geometry-index",
         default=None,
-        help="Optional Natural Earth ISO-3 index (ignored until geometry join)",
+        help="Natural Earth 110m TopoJSON (default: web/public/data/world-110m.topo.json)",
     )
     build_parser.add_argument(
         "--parquet",
@@ -161,8 +161,6 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
 
 
 def _cmd_build(args: argparse.Namespace) -> int:
-    if args.geometry_index:
-        print("build: --geometry-index ignored (has_geometry=false)", file=sys.stderr)
     if args.parquet:
         print("build: --parquet ignored (not emitted in this version)", file=sys.stderr)
     try:
@@ -178,6 +176,7 @@ def _cmd_build(args: argparse.Namespace) -> int:
             allow_unmatched=args.allow_unmatched,
             allow_extreme_mu=args.allow_extreme_mu,
             on_duplicate=args.on_duplicate,
+            geometry_path=args.geometry_index,
         )
     except (IngestError, EmitError) as exc:
         print(f"build error: {exc}", file=sys.stderr)
@@ -186,6 +185,7 @@ def _cmd_build(args: argparse.Namespace) -> int:
     print(f"wrote: {args.out}")
     print(f"ok: {manifest['n_ok']}")
     print(f"no_estimate: {manifest['n_no_estimate']}")
+    print(f"no_iso: {manifest['n_no_iso']}")
     print(f"unmatched: {manifest['n_unmatched']}")
     return 0
 

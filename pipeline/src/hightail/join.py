@@ -1,8 +1,8 @@
-"""Union-frame join of estimates, WPP extract, and territory policy.
+"""Union-frame join of estimates, WPP extract, geometry, and territory policy.
 
-The countries array is WPP ISO-3 territories UNION matched estimate rows.
-Unmatched estimates stay in a sibling list and never get a fake ISO-3.
-Country means are never copied from neighbors or sovereigns.
+The countries array is NE 110m features we keep UNION WPP ISO-3 UNION matched
+estimate rows. Unmatched estimates stay in a sibling list and never get a fake
+ISO-3. Country means are never copied from neighbors or sovereigns.
 """
 
 from __future__ import annotations
@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from hightail.geometry import GeometryFeature, GeometryIndex
 from hightail.ingest import EstimateRecord, IngestResult, UnmatchedRow
 from hightail.normalize import TerritoryPolicy, is_excluded_territory
 from hightail.tails import DEFAULT_SIGMA, compute_tails
@@ -26,6 +27,7 @@ class JoinError(ValueError):
 class JoinResult:
     countries: tuple[dict[str, Any], ...]
     unmatched: tuple[UnmatchedRow, ...]
+    n_geometry_dropped: int = 0
 
     @property
     def n_ok(self) -> int:
@@ -123,9 +125,19 @@ def _ok_fields(record: EstimateRecord, population: int | None) -> dict[str, Any]
     }
 
 
-def _display_name(record: EstimateRecord | None, wpp: WppRow | None, iso3: str) -> str:
+def _display_name(
+    record: EstimateRecord | None,
+    wpp: WppRow | None,
+    iso3: str,
+    geom: GeometryFeature | None = None,
+) -> str:
     if record is not None and record.name:
         return record.name
+    if geom is not None:
+        if geom.name_en:
+            return geom.name_en
+        if geom.name:
+            return geom.name
     if wpp is not None and wpp.name:
         return wpp.name
     return iso3
@@ -137,7 +149,7 @@ def _country_record(
     record: EstimateRecord | None,
     wpp: WppRow | None,
     policy: TerritoryPolicy,
-    has_geometry: bool = False,
+    geom: GeometryFeature | None = None,
 ) -> dict[str, Any]:
     excluded = is_excluded_territory(iso3, policy)
     if excluded:
@@ -147,20 +159,33 @@ def _country_record(
         status = "ok"
         population = wpp.population if wpp is not None else None
         fields = _ok_fields(record, population)
+    elif geom is not None and geom.no_iso:
+        status = "no_iso"
+        fields = _empty_estimate_fields()
     else:
         status = "no_estimate"
         fields = _empty_estimate_fields()
 
+    has_geometry = geom is not None
     population = wpp.population if wpp is not None else None
     pop_year = wpp.pop_year if wpp is not None else None
-    # Continent comes from WPP until geometry join (Natural Earth CONTINENT).
-    continent = wpp.continent if wpp is not None else None
-    region_m49 = wpp.region_m49 if wpp is not None else None
+    if has_geometry and geom is not None and geom.continent:
+        continent = geom.continent
+    elif wpp is not None:
+        continent = wpp.continent
+    else:
+        continent = None
+    if wpp is not None and wpp.region_m49:
+        region_m49 = wpp.region_m49
+    elif geom is not None:
+        region_m49 = geom.region_un
+    else:
+        region_m49 = None
     tiny = population is not None and population < TINY_POPULATION_THRESHOLD
 
     return {
         "iso3": iso3,
-        "name": _display_name(record, wpp, iso3),
+        "name": _display_name(record, wpp, iso3, geom),
         "continent": continent,
         "region_m49": region_m49,
         **fields,
@@ -190,7 +215,8 @@ def join_frame(
     policy: TerritoryPolicy,
     *,
     allow_unmatched: bool = False,
-    has_geometry: bool = False,
+    geometry: GeometryIndex | None = None,
+    fail_on_geometry_dropped: bool = True,
 ) -> JoinResult:
     """Build the union frame. Never imputes μ from a different ISO-3."""
     if ingest.unmatched and not allow_unmatched:
@@ -202,16 +228,25 @@ def join_frame(
             f"sibling array): {', '.join(labels)}"
         )
 
+    n_dropped = geometry.n_geometry_dropped if geometry is not None else 0
+    if fail_on_geometry_dropped and n_dropped > 0:
+        raise JoinError(f"n_geometry_dropped={n_dropped} > 0")
+
     estimates = {row.iso3: row for row in ingest.records}
-    keys = set(wpp) | set(estimates)
+    geom_features = dict(geometry.features) if geometry is not None else {}
+    keys = set(wpp) | set(estimates) | set(geom_features)
     countries = [
         _country_record(
             iso3,
             record=estimates.get(iso3),
             wpp=wpp.get(iso3),
             policy=policy,
-            has_geometry=has_geometry,
+            geom=geom_features.get(iso3),
         )
         for iso3 in sorted(keys)
     ]
-    return JoinResult(countries=tuple(countries), unmatched=ingest.unmatched)
+    return JoinResult(
+        countries=tuple(countries),
+        unmatched=ingest.unmatched,
+        n_geometry_dropped=n_dropped,
+    )
