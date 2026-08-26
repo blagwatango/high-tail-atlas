@@ -6,7 +6,11 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto max-w-3xl px-4 py-10"
+    >
       <h1 className="text-2xl font-semibold tracking-tight">About</h1>
       <p className="mt-4 text-stone-800">
         High-Tail Atlas will publish <strong>modeled estimates</strong> of the

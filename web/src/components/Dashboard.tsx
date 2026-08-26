@@ -98,17 +98,41 @@ export function Dashboard() {
 
   if (error) {
     return (
-      <p className="mt-6 text-red-800" role="alert">
-        {error}
-      </p>
+      <div className="mt-6">
+        <p className="text-red-800" role="alert">
+          {error}
+        </p>
+        <section
+          id="country-table"
+          tabIndex={-1}
+          aria-labelledby="table-heading"
+          className="mt-6"
+        >
+          <h2 id="table-heading" className="text-lg font-semibold">
+            Country estimates
+          </h2>
+        </section>
+      </div>
     );
   }
 
   if (!atlas) {
     return (
-      <p className="mt-6 text-stone-700" data-testid="dashboard-loading">
-        Loading modeled estimates…
-      </p>
+      <div className="mt-6">
+        <p className="text-stone-700" data-testid="dashboard-loading">
+          Loading modeled estimates…
+        </p>
+        <section
+          id="country-table"
+          tabIndex={-1}
+          aria-labelledby="table-heading"
+          className="mt-6"
+        >
+          <h2 id="table-heading" className="text-lg font-semibold">
+            Country estimates
+          </h2>
+        </section>
+      </div>
     );
   }
 
@@ -121,7 +145,7 @@ export function Dashboard() {
         {demo ? (
           <span
             data-testid="demo-badge"
-            className="rounded bg-amber-600 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white"
+            className="rounded bg-amber-800 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white"
           >
             DEMO DATA
           </span>
@@ -164,6 +188,13 @@ export function Dashboard() {
         <h2 id="map-heading" className="text-lg font-semibold">
           Estimated share of population modeled at IQ ≥ 130
         </h2>
+        <p className="mt-1 text-sm text-stone-600">
+          Visual overview. Keyboard path:{" "}
+          <a href="#country-table" className="underline underline-offset-2">
+            country estimates table
+          </a>
+          .
+        </p>
         <ChoroplethMap
           countries={atlas.countries}
           passingIso3={passingIso3}
@@ -185,6 +216,8 @@ export function Dashboard() {
       </section>
 
       <section
+        id="country-table"
+        tabIndex={-1}
         aria-labelledby="table-heading"
         className="rounded-md border border-stone-200 bg-white p-4"
       >

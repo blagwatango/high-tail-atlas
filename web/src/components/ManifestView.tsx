@@ -57,7 +57,11 @@ export function ManifestView() {
           DEMO DATA
         </p>
       ) : null}
-      <pre className="overflow-x-auto rounded border border-stone-200 bg-white p-4 text-xs leading-relaxed text-stone-800">
+      <pre
+        tabIndex={0}
+        aria-label="Published atlas.json manifest"
+        className="overflow-x-auto rounded border border-stone-200 bg-white p-4 text-xs leading-relaxed text-stone-800"
+      >
         {JSON.stringify(manifest, null, 2)}
       </pre>
     </div>

@@ -22,10 +22,16 @@ jobs:
           cache-dependency-path: web/pnpm-lock.yaml
       - name: Install
         run: pnpm install
+      - name: Copy audit
+        run: node scripts/audit-ui-copy.mjs
       - name: Typecheck
         run: pnpm exec tsc --noEmit
       - name: Test
         run: pnpm test
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Playwright
+        run: pnpm exec playwright test
 
   pipeline:
     runs-on: ubuntu-latest

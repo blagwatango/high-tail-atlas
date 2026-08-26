@@ -3,3 +3,39 @@
 body {
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
+
+.skip-links {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+}
+
+.skip-links:focus-within {
+  left: 0.75rem;
+  top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.skip-link {
+  display: inline-block;
+  border-radius: 0.25rem;
+  background: #1c1917;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.skip-link:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+#main-content:focus,
+#country-table:focus {
+  outline: 2px solid #1c1917;
+  outline-offset: 4px;
+}

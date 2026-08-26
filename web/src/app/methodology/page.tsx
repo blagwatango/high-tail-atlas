@@ -19,7 +19,11 @@ export const metadata: Metadata = {
 
 export default function MethodologyPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto max-w-3xl px-4 py-10"
+    >
       <h1 className="text-2xl font-semibold tracking-tight">Methodology</h1>
       <p className="mt-4 text-stone-800">
         These figures are <strong>modeled estimates</strong>, not measurements.
@@ -214,7 +218,11 @@ export default function MethodologyPage() {
           <code className="font-mono text-sm">web/public/data/atlas.json</code>
           :
         </p>
-        <pre className="mt-3 overflow-x-auto rounded border border-stone-200 bg-white p-4 text-xs leading-relaxed text-stone-800">{`python -m hightail.cli build \\
+        <pre
+          tabIndex={0}
+          aria-label="Pipeline build command"
+          className="mt-3 overflow-x-auto rounded border border-stone-200 bg-white p-4 text-xs leading-relaxed text-stone-800"
+        >{`python -m hightail.cli build \\
   --estimates data/raw/estimates.csv \\
   --population data/raw/wpp_extract.csv \\
   --overrides data/overrides/iso3_overrides.yaml \\

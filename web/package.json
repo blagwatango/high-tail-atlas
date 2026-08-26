@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "audit:copy": "node scripts/audit-ui-copy.mjs"
   },
   "dependencies": {
     "@tanstack/react-table": "8.21.3",
@@ -22,6 +24,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/geojson": "^7946.0.16",

@@ -79,6 +79,7 @@ function QualityBadge({ quality }: { quality: Quality | null }) {
   return (
     <span
       title={QUALITY_HINT[quality]}
+      aria-label={`Quality ${quality}: ${QUALITY_HINT[quality]}`}
       className={`inline-block rounded border px-1.5 py-0.5 font-mono text-xs ${QUALITY_CLASS[quality]}`}
     >
       {quality}
