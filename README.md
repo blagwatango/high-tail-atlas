@@ -8,7 +8,7 @@ v1 will ship a labeled **DEMO** dataset. Do not treat demo figures as measuremen
 
 - Node.js 24 (design mentioned 22 LTS; 24 is supported)
 - [pnpm](https://pnpm.io) 10.x via Corepack, used **inside `web/`**
-- Python 3.11+ for the pipeline (not used in this scaffold)
+- Python 3.11+ for the pipeline
 
 ## Web app (`web/`)
 

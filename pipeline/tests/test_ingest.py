@@ -112,6 +112,41 @@ def test_empty_source_url_does_not_fail(tmp_path: Path):
     assert result.records[0].quality == "C"
 
 
+def test_invalid_source_url_fails(tmp_path: Path):
+    path = _write_csv(
+        tmp_path / "bad_url.csv",
+        "USA,United States,100,,,DEMO_FIXTURE,not-a-url,2026,1,convenience,C,x\n",
+    )
+    with pytest.raises(IngestError, match="source_url"):
+        ingest_estimates(path)
+
+
+def test_valid_source_url_is_kept(tmp_path: Path):
+    path = _write_csv(
+        tmp_path / "good_url.csv",
+        "USA,United States,100,,,DEMO_FIXTURE,https://example.com/estimates,2026,1,convenience,C,x\n",
+    )
+    result = ingest_estimates(path)
+    assert result.n_ok == 1
+    assert result.records[0].source_url == "https://example.com/estimates"
+
+
+def test_iso2_only_row_still_validates_source_url(tmp_path: Path):
+    path = _write_csv(
+        tmp_path / "iso2_url.csv",
+        "US,,100,,,DEMO_FIXTURE,not-a-url,2026,1,convenience,C,x\n",
+    )
+    with pytest.raises(IngestError, match="source_url"):
+        ingest_estimates(path)
+
+
+def test_iso2_only_row_ingests(tmp_path: Path):
+    path = _write_csv(tmp_path / "iso2.csv", "US,,100,,,,,,,,\n")
+    result = ingest_estimates(path)
+    assert result.n_ok == 1
+    assert result.records[0].iso3 == "USA"
+
+
 def test_whitespace_cells_are_omitted(tmp_path: Path):
     path = _write_csv(
         tmp_path / "ws.csv",

@@ -14,6 +14,7 @@ import re
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Literal, Mapping
+from urllib.parse import urlparse
 
 from jsonschema import Draft7Validator, FormatChecker
 from jsonschema.exceptions import ValidationError
@@ -109,6 +110,18 @@ class IngestResult:
         return len(self.unmatched)
 
 
+def _is_absolute_uri(value: object) -> bool:
+    """JSON Schema format:uri — absolute URI. Bare jsonschema has no uri checker."""
+    if not isinstance(value, str):
+        return True
+    parsed = urlparse(value)
+    if not parsed.scheme:
+        return False
+    if parsed.scheme.lower() in {"http", "https"}:
+        return bool(parsed.netloc)
+    return bool(parsed.netloc or parsed.path)
+
+
 def _load_row_validator(schema_path: Path) -> Draft7Validator:
     root = json.loads(schema_path.read_text(encoding="utf-8"))
     if not isinstance(root, dict) or "definitions" not in root:
@@ -118,7 +131,9 @@ def _load_row_validator(schema_path: Path) -> Draft7Validator:
         "definitions": root["definitions"],
         **root["definitions"]["EstimateRow"],
     }
-    return Draft7Validator(row_schema, format_checker=FormatChecker())
+    checker = FormatChecker()
+    checker.checks("uri")(_is_absolute_uri)
+    return Draft7Validator(row_schema, format_checker=checker)
 
 
 def _omit_empty_cells(raw: Mapping[str | None, str | None]) -> dict[str, str]:
@@ -262,6 +277,10 @@ def _validate_typed(
     if sample_n is not None and sample_n < 1:
         raise IngestError(f"row {line_no}: sample_n must be a positive integer, got {sample_n}")
 
+    source_url = typed.get("source_url")
+    if source_url is not None and not _is_absolute_uri(source_url):
+        raise IngestError(f"row {line_no}: source_url must be a URI, got {source_url!r}")
+
     return extreme
 
 
@@ -272,6 +291,10 @@ def _schema_instance(typed: Mapping[str, Any], *, extreme_mu: bool) -> dict[str,
     iso3 = instance.get("iso3")
     if isinstance(iso3, str) and not _ISO3_SCHEMA_RE.fullmatch(iso3):
         instance.pop("iso3", None)
+        # ISO-2 / ADM0 tokens are resolved later. Keep anyOf(iso3|name) so
+        # remaining properties (source_url, enums, ranges) still validate.
+        if not instance.get("name"):
+            instance["iso3"] = "XXX"
     return instance
 
 
@@ -354,11 +377,10 @@ def ingest_estimates(
         extreme = _validate_typed(typed, line_no, allow_extreme_mu=allow_extreme_mu)
 
         instance = _schema_instance(typed, extreme_mu=extreme)
-        if instance.get("iso3") or instance.get("name"):
-            try:
-                validator.validate(instance)
-            except ValidationError as exc:
-                raise IngestError(f"row {line_no}: {exc.message}") from exc
+        try:
+            validator.validate(instance)
+        except ValidationError as exc:
+            raise IngestError(f"row {line_no}: {exc.message}") from exc
 
         resolved = resolve_row(
             iso3=typed.get("iso3"),
