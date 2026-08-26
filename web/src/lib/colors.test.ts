@@ -7,6 +7,8 @@ import {
   REFERENCE_P_LABEL,
   binFill,
   choroplethFill,
+  choroplethFillKind,
+  choroplethHatch,
 } from "./colors";
 
 describe("reference constants", () => {
@@ -85,3 +87,38 @@ describe("choroplethFill", () => {
     ).toBe(COLOR_NO_DATA);
   });
 });
+
+describe("choroplethFillKind and hatch", () => {
+  it("uses no-data hatch before treating a row as filtered", () => {
+    expect(
+      choroplethFillKind({
+        pHat: null,
+        status: "no_estimate",
+        filteredOut: true,
+      }),
+    ).toBe("no-data");
+    expect(
+      choroplethHatch({
+        status: "no_estimate",
+        quality: null,
+        filteredOut: true,
+      }),
+    ).toBe("no-data");
+    expect(
+      choroplethFillKind({ pHat: 0.02, status: "ok", filteredOut: true }),
+    ).toBe("filtered");
+    expect(
+      choroplethHatch({ status: "ok", quality: "C", filteredOut: true }),
+    ).toBe("none");
+    expect(
+      choroplethHatch({ status: "ok", quality: "C", filteredOut: false }),
+    ).toBe("sparse");
+    expect(
+      choroplethHatch({ status: "ok", quality: "U", filteredOut: false }),
+    ).toBe("sparse");
+    expect(
+      choroplethHatch({ status: "ok", quality: "A", filteredOut: false }),
+    ).toBe("none");
+  });
+});
+

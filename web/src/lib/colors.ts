@@ -49,3 +49,29 @@ export function choroplethFill(opts: {
   if (opts.filteredOut) return COLOR_FILTERED;
   return binFill(opts.pHat);
 }
+
+export type ChoroplethFillKind = "bin" | "no-data" | "filtered";
+
+export function choroplethFillKind(opts: {
+  pHat: number | null;
+  status: "ok" | "no_estimate" | "no_iso" | "excluded_territory";
+  filteredOut: boolean;
+}): ChoroplethFillKind {
+  if (opts.status !== "ok" || opts.pHat == null) return "no-data";
+  if (opts.filteredOut) return "filtered";
+  return "bin";
+}
+
+/** Overlay hatch. Filtered-out and A/B have none. */
+export type ChoroplethHatch = "none" | "no-data" | "sparse";
+
+export function choroplethHatch(opts: {
+  status: "ok" | "no_estimate" | "no_iso" | "excluded_territory";
+  quality: "A" | "B" | "C" | "D" | "E" | "U" | null;
+  filteredOut: boolean;
+}): ChoroplethHatch {
+  if (opts.status !== "ok") return "no-data";
+  if (opts.filteredOut) return "none";
+  if (opts.quality === "C" || opts.quality === "U") return "sparse";
+  return "none";
+}

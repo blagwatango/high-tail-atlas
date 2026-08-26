@@ -41,6 +41,44 @@ test("demo dataset shows a DEMO DATA badge", async ({ page }) => {
   await expect(page.getByTestId("demo-badge")).toHaveText("DEMO DATA");
 });
 
+test("demo choropleth has at least one data-bin country", async ({ page }) => {
+  await page.goto("/");
+  const map = page.getByTestId("choropleth-map");
+  await expect(map).toBeVisible({ timeout: 30_000 });
+  const filled = map.locator("path[data-fill-kind='bin']");
+  await expect(filled.first()).toBeVisible({ timeout: 30_000 });
+  expect(await filled.count()).toBeGreaterThanOrEqual(1);
+  await expect(map.locator('path[data-iso3="USA"]')).toHaveAttribute(
+    "data-fill-kind",
+    "bin",
+  );
+  await expect(map.locator('path[data-iso3="USA"]')).not.toHaveAttribute(
+    "data-fill",
+    "#d1d5db",
+  );
+  await expect(map.locator('path[data-iso3="USA"]')).not.toHaveAttribute(
+    "data-fill",
+    "#e5e7eb",
+  );
+  await expect(page.getByTestId("color-legend")).toContainText(
+    "Modeled share of population at IQ ≥ 130 (normal tail). Bins are coarse on purpose.",
+  );
+  await expect(page.getByTestId("color-legend")).toContainText(
+    "μ=100, σ=15 → 2.28%.",
+  );
+});
+
+test("clicking a filled country opens the detail stub", async ({ page }) => {
+  await page.goto("/");
+  const usa = page.locator('path[data-iso3="USA"][data-fill-kind="bin"]');
+  await expect(usa).toBeVisible({ timeout: 30_000 });
+  await usa.click();
+  const drawer = page.getByTestId("country-drawer");
+  await expect(drawer).toBeVisible();
+  await expect(drawer).toContainText("Estimated share modeled at IQ ≥ 130");
+  await expect(drawer).toContainText("This is a model output, not a count.");
+});
+
 test("home copy avoids ranking chrome", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByTestId("filtered-ok-rows")).toBeVisible({
