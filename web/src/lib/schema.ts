@@ -20,6 +20,17 @@ const emptyToUndef = z.literal("").transform(() => undefined);
 
 const unitInterval = z.number().min(0).max(1).nullable();
 
+const QualityCounts = z
+  .object({
+    A: z.number().int(),
+    B: z.number().int(),
+    C: z.number().int(),
+    D: z.number().int(),
+    E: z.number().int(),
+    U: z.number().int(),
+  })
+  .strict();
+
 export const EstimateRow = z
   .object({
     iso3: z.string().length(3).regex(/^[A-Z]{3}$/).optional(),
@@ -33,7 +44,7 @@ export const EstimateRow = z
     sample_n: z.number().int().positive().optional(),
     sample_type: SampleType.optional(),
     quality: Quality.optional(),
-    notes: z.string().optional().or(emptyToUndef),
+    notes: z.union([emptyToUndef, z.string()]).optional(),
   })
   .refine((r) => r.iso3 || r.name, { message: "iso3 or name required" });
 export type EstimateRow = z.infer<typeof EstimateRow>;
@@ -69,6 +80,7 @@ export const CountryRecord = z
     has_geometry: z.boolean(),
     tiny_population: z.boolean(),
   })
+  .strict()
   .superRefine((r, ctx) => {
     if ((r.quality === null) !== (r.status !== "ok")) {
       ctx.addIssue({
@@ -102,56 +114,66 @@ export const CountryRecord = z
   });
 export type CountryRecord = z.infer<typeof CountryRecord>;
 
-export const UnmatchedEstimate = z.object({
-  raw_name: z.string().nullable(),
-  raw_iso3: z.string().nullable(),
-  mu: z.number(),
-  reason: z.enum([
-    "unmapped_name",
-    "invalid_iso3",
-    "ambiguous_name",
-    "never_map",
-  ]),
-});
+export const UnmatchedEstimate = z
+  .object({
+    raw_name: z.string().nullable(),
+    raw_iso3: z.string().nullable(),
+    mu: z.number(),
+    reason: z.enum([
+      "unmapped_name",
+      "invalid_iso3",
+      "ambiguous_name",
+      "never_map",
+    ]),
+  })
+  .strict();
 export type UnmatchedEstimate = z.infer<typeof UnmatchedEstimate>;
 
-export const AtlasManifest = z.object({
-  schema_version: z.literal(1),
-  dataset_id: z.string(),
-  created_at: z.string().datetime(),
-  pipeline_version: z.string(),
-  threshold_iq: z.literal(130),
-  default_sigma: z.literal(15),
-  formula: z.literal("p = 1 - Phi((130 - mu) / sigma)"),
-  phi_implementation: z.literal("scipy.stats.norm.sf"),
-  metric_label: z.string(),
-  population_source: z.string(),
-  geometry_source: z.string(),
-  estimates_source: z.object({
-    name: z.string(),
-    citation: z.string().nullable(),
-    url: z.string().nullable(),
-    license: z.string().nullable(),
-  }),
-  caveats_hash: z.string(),
-  n_ok: z.number().int(),
-  n_no_estimate: z.number().int(),
-  n_no_iso: z.number().int(),
-  n_excluded_territory: z.number().int(),
-  n_unmatched: z.number().int(),
-  n_quality: z.record(Quality, z.number().int()),
-  flags: z.object({
-    show_continuous_scale: z.boolean(),
-    allow_quality_d: z.boolean(),
-    demo_badge: z.boolean(),
-  }),
-  assumptions: z.array(z.string()),
-});
+export const AtlasManifest = z
+  .object({
+    schema_version: z.literal(1),
+    dataset_id: z.string(),
+    created_at: z.string().datetime({ offset: true }),
+    pipeline_version: z.string(),
+    threshold_iq: z.literal(130),
+    default_sigma: z.literal(15),
+    formula: z.literal("p = 1 - Phi((130 - mu) / sigma)"),
+    phi_implementation: z.literal("scipy.stats.norm.sf"),
+    metric_label: z.string(),
+    population_source: z.string(),
+    geometry_source: z.string(),
+    estimates_source: z
+      .object({
+        name: z.string(),
+        citation: z.string().nullable(),
+        url: z.string().nullable(),
+        license: z.string().nullable(),
+      })
+      .strict(),
+    caveats_hash: z.string(),
+    n_ok: z.number().int(),
+    n_no_estimate: z.number().int(),
+    n_no_iso: z.number().int(),
+    n_excluded_territory: z.number().int(),
+    n_unmatched: z.number().int(),
+    n_quality: QualityCounts,
+    flags: z
+      .object({
+        show_continuous_scale: z.boolean(),
+        allow_quality_d: z.boolean(),
+        demo_badge: z.boolean(),
+      })
+      .strict(),
+    assumptions: z.array(z.string()),
+  })
+  .strict();
 export type AtlasManifest = z.infer<typeof AtlasManifest>;
 
-export const AtlasFile = z.object({
-  manifest: AtlasManifest,
-  countries: z.array(CountryRecord),
-  unmatched_estimates: z.array(UnmatchedEstimate),
-});
+export const AtlasFile = z
+  .object({
+    manifest: AtlasManifest,
+    countries: z.array(CountryRecord),
+    unmatched_estimates: z.array(UnmatchedEstimate),
+  })
+  .strict();
 export type AtlasFile = z.infer<typeof AtlasFile>;

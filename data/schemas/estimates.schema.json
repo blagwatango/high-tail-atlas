@@ -70,9 +70,10 @@
         "quality": { "$ref": "#/definitions/Quality" },
         "notes": {
           "anyOf": [
-            { "type": "string" },
+            { "type": "string", "minLength": 1 },
             { "type": "string", "maxLength": 0 }
-          ]
+          ],
+          "description": "Empty notes are omitted before parse (same as empty source_url)."
         }
       }
     }

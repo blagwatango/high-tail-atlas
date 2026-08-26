@@ -246,10 +246,16 @@
         "n_unmatched": { "type": "integer" },
         "n_quality": {
           "type": "object",
-          "propertyNames": {
-            "enum": ["A", "B", "C", "D", "E", "U"]
-          },
-          "additionalProperties": { "type": "integer" }
+          "additionalProperties": false,
+          "required": ["A", "B", "C", "D", "E", "U"],
+          "properties": {
+            "A": { "type": "integer" },
+            "B": { "type": "integer" },
+            "C": { "type": "integer" },
+            "D": { "type": "integer" },
+            "E": { "type": "integer" },
+            "U": { "type": "integer" }
+          }
         },
         "flags": {
           "type": "object",

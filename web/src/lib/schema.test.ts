@@ -39,11 +39,48 @@ describe("AtlasFile", () => {
     expect(missing?.p_hat).toBeNull();
   });
 
+  it("accepts created_at with an RFC 3339 numeric offset", () => {
+    const raw = loadMinAtlas() as { manifest: Record<string, unknown> };
+    const parsed = AtlasFile.parse({
+      ...raw,
+      manifest: {
+        ...raw.manifest,
+        created_at: "2026-08-25T00:00:00+00:00",
+      },
+    });
+    expect(parsed.manifest.created_at).toBe("2026-08-25T00:00:00+00:00");
+  });
+
+  it("rejects unknown keys", () => {
+    const raw = loadMinAtlas() as Record<string, unknown>;
+    expect(() => AtlasFile.parse({ ...raw, p_hat_pct: 2.3 })).toThrow();
+  });
+
+  it("rejects n_quality missing a quality key", () => {
+    const raw = loadMinAtlas() as { manifest: Record<string, unknown> };
+    expect(() =>
+      AtlasFile.parse({
+        ...raw,
+        manifest: {
+          ...raw.manifest,
+          n_quality: { A: 0, B: 0, C: 1, D: 0, E: 0 },
+        },
+      }),
+    ).toThrow();
+  });
+
   it("rejects a CountryRecord that is ok but quality is null", () => {
     const parsed = AtlasFile.parse(loadMinAtlas());
     const ok = parsed.countries.find((c) => c.status === "ok");
     expect(ok).toBeDefined();
     expect(() => CountryRecord.parse({ ...ok, quality: null })).toThrow();
+  });
+
+  it("rejects a CountryRecord that is no_estimate but quality is set", () => {
+    const parsed = AtlasFile.parse(loadMinAtlas());
+    const missing = parsed.countries.find((c) => c.status === "no_estimate");
+    expect(missing).toBeDefined();
+    expect(() => CountryRecord.parse({ ...missing, quality: "C" })).toThrow();
   });
 
   it("rejects a CountryRecord that is ok but p_hat is null", () => {
@@ -61,6 +98,22 @@ describe("AtlasFile", () => {
       CountryRecord.parse({ ...ok, mu_se: null, p_lo_se: 0.01, p_hi_se: 0.03 }),
     ).toThrow();
   });
+
+  it("rejects null SE bands when mu_se is present", () => {
+    const parsed = AtlasFile.parse(loadMinAtlas());
+    const ok = parsed.countries.find((c) => c.status === "ok");
+    expect(ok).toBeDefined();
+    expect(() =>
+      CountryRecord.parse({ ...ok, mu_se: 1.5, p_lo_se: null, p_hi_se: null }),
+    ).toThrow();
+  });
+
+  it("accepts NE ADM0_A3 iso3 values like B57 on CountryRecord", () => {
+    const parsed = AtlasFile.parse(loadMinAtlas());
+    const ok = parsed.countries.find((c) => c.status === "ok");
+    expect(ok).toBeDefined();
+    expect(CountryRecord.parse({ ...ok, iso3: "B57" }).iso3).toBe("B57");
+  });
 });
 
 describe("EstimateRow", () => {
@@ -71,6 +124,15 @@ describe("EstimateRow", () => {
       source_url: "",
     });
     expect(row.source_url).toBeUndefined();
+  });
+
+  it("omits empty notes", () => {
+    const row = EstimateRow.parse({
+      iso3: "USA",
+      mu: 100,
+      notes: "",
+    });
+    expect(row.notes).toBeUndefined();
   });
 
   it("accepts a valid source_url", () => {
@@ -84,5 +146,9 @@ describe("EstimateRow", () => {
 
   it("rejects a row with neither iso3 nor name", () => {
     expect(() => EstimateRow.parse({ mu: 100 })).toThrow(/iso3 or name/);
+  });
+
+  it("rejects EstimateRow iso3 that is not A-Z only", () => {
+    expect(() => EstimateRow.parse({ iso3: "B57", mu: 100 })).toThrow();
   });
 });
