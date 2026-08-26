@@ -24,14 +24,52 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The site is a static export (`output: "export"`, trailing slashes).
+Open [http://localhost:3000](http://localhost:3000). The site is a static export (`output: "export"`, `trailingSlash: true`, `images.unoptimized: true`).
+
+Regenerate `web/public/data/atlas.json` then export:
 
 ```bash
 cd web
+pnpm pipeline
 pnpm build
+pnpm check:sizes
 ```
 
-The export is written to `web/out/`. Optional project-pages prefix: set `NEXT_PUBLIC_BASE_PATH` (for example `/high-tail-atlas`) before `pnpm build`. `next.config.ts` does not invent that variable.
+`pnpm pipeline` runs `python -m hightail.cli build` into `web/public/data/atlas.json` (install the pipeline first; see below). The export is written to `web/out/`. Optional project-pages prefix: set `NEXT_PUBLIC_BASE_PATH` (for example `/high-tail-atlas`) before `pnpm build`. `next.config.ts` does not invent that variable.
+
+## Static hosting
+
+Demo deploys stay `noindex,nofollow`. `web/public/robots.txt` is:
+
+```
+User-agent: *
+Disallow: /
+```
+
+GitHub Pages cannot set `X-Robots-Tag` per query string; do not promise per-sort noindex. Non-demo public deploys may index `/` and `/methodology` only after swapping the demo artifact.
+
+`web/public/.nojekyll` ships in the export so GitHub Pages does not ignore `_next/`.
+
+Hard size budgets (CI `pnpm check:sizes`): `atlas.json` < 250 KB uncompressed, Natural Earth 110m TopoJSON < 300 KB uncompressed. First-load JS gzip including the map is a 400 KB committed budget.
+
+### GitHub Pages
+
+Project site (`https://<user>.github.io/high-tail-atlas/`):
+
+1. Settings → Pages → **GitHub Actions**.
+2. Build with `NEXT_PUBLIC_BASE_PATH=/high-tail-atlas` so both `basePath` and `atlasHref()` share one env var. Leave it unset for a user/org site or a custom domain (`/data/atlas.json`).
+3. `trailingSlash: true` is required so `/about/` resolves to `about/index.html`.
+4. CI uploads `static-site` (no prefix) and `static-site-project-pages` (prefix `/high-tail-atlas`). On `main`, **Run workflow** (`workflow_dispatch`) deploys the project-pages artifact.
+
+Manual: download `static-site-project-pages` and publish `out/` (or copy to the `gh-pages` branch). Serve that folder at `/high-tail-atlas/`.
+
+### Cloudflare Pages
+
+- Build command (repo root): `python -m pip install -e pipeline && cd web && pnpm install && pnpm pipeline && pnpm build`
+- Publish directory: `web/out`
+- Framework preset: None (or Next.js static export)
+- On a custom domain, leave `NEXT_PUBLIC_BASE_PATH` unset. Set it only if the site is hosted under a subpath.
+- `trailingSlash: true` matches Cloudflare’s directory `index.html` lookup.
 
 ## Pipeline (`pipeline/`)
 

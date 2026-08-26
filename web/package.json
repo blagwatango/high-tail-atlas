@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "pipeline": "node scripts/run-pipeline.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:static": "playwright test -c playwright.static.config.ts",
+    "check:sizes": "node scripts/check-size-budgets.mjs",
     "audit:copy": "node scripts/audit-ui-copy.mjs"
   },
   "dependencies": {

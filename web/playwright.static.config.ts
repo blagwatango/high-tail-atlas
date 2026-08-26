@@ -1,23 +1,24 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = process.env.PLAYWRIGHT_PORT || "3000";
-const baseURL = `http://127.0.0.1:${port}`;
+const port = process.env.PLAYWRIGHT_PORT || "4173";
+const prefix = (process.env.PLAYWRIGHT_BASE_PATH || "").replace(/\/$/, "");
+const origin = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
   testDir: "./e2e",
-  testIgnore: ["**/static-export.spec.ts"],
+  testMatch: "static-export.spec.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   use: {
-    baseURL,
+    baseURL: origin,
     trace: "on-first-retry",
   },
   webServer: {
-    command: `pnpm dev --hostname 127.0.0.1 --port ${port}`,
-    url: baseURL,
+    command: `node scripts/serve-out.mjs --port ${port}${prefix ? ` --prefix ${prefix}` : ""}`,
+    url: `${origin}${prefix}/data/atlas.json`,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 30_000,
   },
   projects: [
     {
