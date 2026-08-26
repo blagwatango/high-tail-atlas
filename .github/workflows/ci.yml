@@ -43,3 +43,5 @@ jobs:
         run: python -m pytest
       - name: Ingest dry-run
         run: python -m hightail.cli ingest --dry-run --estimates ../data/fixtures/demo_estimates.csv
+      - name: Build demo atlas
+        run: python -m hightail.cli build --estimates ../data/fixtures/demo_estimates.csv --population ../data/raw/wpp_extract.csv --overrides ../data/overrides/iso3_overrides.yaml --policy ../data/overrides/territory_policy.yaml --out $RUNNER_TEMP/atlas.json --reference-year 2025

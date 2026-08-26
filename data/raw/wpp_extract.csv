@@ -1,0 +1,35 @@
+iso3,name,population,pop_year,variant,region_m49,continent
+AFG,Afghanistan,43844111,2025,Medium,Southern Asia,Asia
+ARG,Argentina,45851378,2025,Medium,South America,Americas
+AUS,Australia,26974026,2025,Medium,Australia and New Zealand,Oceania
+BGD,Bangladesh,175686899,2025,Medium,Southern Asia,Asia
+BRA,Brazil,212812405,2025,Medium,South America,Americas
+CAN,Canada,40126723,2025,Medium,Northern America,Americas
+CHN,China,1416096094,2025,Medium,Eastern Asia,Asia
+COL,Colombia,53425635,2025,Medium,South America,Americas
+DEU,Germany,84075075,2025,Medium,Western Europe,Europe
+DZA,Algeria,47435312,2025,Medium,Northern Africa,Africa
+EGY,Egypt,118365995,2025,Medium,Northern Africa,Africa
+ESP,Spain,47889958,2025,Medium,Southern Europe,Europe
+ETH,Ethiopia,135472051,2025,Medium,Eastern Africa,Africa
+FRA,France,66650804,2025,Medium,Western Europe,Europe
+GBR,United Kingdom,69551332,2025,Medium,Northern Europe,Europe
+IDN,Indonesia,285721236,2025,Medium,South-Eastern Asia,Asia
+IND,India,1463865525,2025,Medium,Southern Asia,Asia
+ITA,Italy,59146260,2025,Medium,Southern Europe,Europe
+JPN,Japan,123103479,2025,Medium,Eastern Asia,Asia
+KEN,Kenya,57532493,2025,Medium,Eastern Africa,Africa
+KOR,Republic of Korea,51667029,2025,Medium,Eastern Asia,Asia
+MEX,Mexico,131946900,2025,Medium,Central America,Americas
+NGA,Nigeria,237527782,2025,Medium,Western Africa,Africa
+NRU,Nauru,12025,2025,Medium,Micronesia,Oceania
+PAK,Pakistan,255219554,2025,Medium,Southern Asia,Asia
+PHL,Philippines,116786962,2025,Medium,South-Eastern Asia,Asia
+POL,Poland,38140910,2025,Medium,Eastern Europe,Europe
+RUS,Russian Federation,143997393,2025,Medium,Eastern Europe,Europe
+TUR,Türkiye,87685426,2025,Medium,Western Asia,Asia
+TUV,Tuvalu,9492,2025,Medium,Polynesia,Oceania
+UKR,Ukraine,38980376,2025,Medium,Eastern Europe,Europe
+USA,United States of America,347275807,2025,Medium,Northern America,Americas
+VNM,Viet Nam,101598527,2025,Medium,South-Eastern Asia,Asia
+ZAF,South Africa,64747319,2025,Medium,Southern Africa,Africa

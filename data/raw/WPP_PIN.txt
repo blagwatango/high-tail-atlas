@@ -1,0 +1,8 @@
+# High-Tail Atlas WPP extract pin
+citation: United Nations, DESA/Population Division (2024). World Population Prospects 2024.
+source_page: https://population.un.org/wpp/assets/
+filename: wpp_extract.csv
+reference_year: 2025
+variant: Medium
+sha256: 98cdd83cc3c7f8b5dcac48b0594004520f6f0e9cf251782a1378a285ac1d4a03
+notes: Trimmed fixture covering demo ISO-3s plus additional WPP territories (no_estimate / tiny_population). Population is persons (round(PopTotal * 1000) from WPP 2024 Medium 2025). Not a national-IQ table. DESA Compact is the primary source; OWID processed WPP is an allowed fallback. Cite UN DESA 2024 either way.
