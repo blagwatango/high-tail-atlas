@@ -1,0 +1,40 @@
+# Name/code exceptions only. Cite ISO 3166-1 or UN M49 when adding aliases.
+# Join key is ISO 3166-1 alpha-3 (uppercase). Do not impute from neighbors.
+version: 1
+aliases:
+  # ISO 3166-1: Korea (Republic of) — KOR. Not PRK.
+  "South Korea": KOR
+  "Korea, Republic of": KOR
+  # ISO 3166-1: Czechia (short name); former English name Czech Republic — CZE
+  "Czech Republic": CZE
+  "Czechia": CZE
+  # ISO 3166-1: Cabo Verde; English exonym Cape Verde — CPV
+  "Cape Verde": CPV
+  # ISO 3166-1: Eswatini; former name Swaziland — SWZ
+  "Swaziland": SWZ
+  "Eswatini": SWZ
+  # ISO 3166-1: Türkiye; former English name Turkey — TUR
+  "Turkey": TUR
+  "Türkiye": TUR
+  # ISO 3166-1: Côte d'Ivoire — CIV
+  "Ivory Coast": CIV
+  "Cote d'Ivoire": CIV
+  # ISO 3166-1 / UN M49: Congo (Democratic Republic of the) — COD
+  "DRC": COD
+  "Congo, Democratic Republic of the": COD
+  # ISO 3166-1 / UN M49: Congo — COG
+  "Republic of the Congo": COG
+  # Kosovo: user-assigned alpha-3 XKX (not ISO 3166-1). NE ADM0 KOS → XKX.
+  XKX: XKX
+  KOS: XKX
+  # ISO 3166-1: Romania is ROU; withdrawn alpha-3 ROM
+  ROM: ROU
+  # ISO 3166-1: Namibia — NAM (identity; see also iso2_overrides NA)
+  NAM: NAM
+never_map:
+  - Congo          # COD vs COG
+  - Korea          # KOR vs PRK
+  - Guinea         # GIN vs GNQ vs GNB
+iso2_overrides:
+  # ISO 3166-1 alpha-2 NA is Namibia. pycountry/pandas may treat NA as missing.
+  "NA": NAM

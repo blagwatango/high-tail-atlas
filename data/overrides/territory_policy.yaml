@@ -1,0 +1,20 @@
+# Natural Earth de facto Admin 0. Not a national point-of-view file.
+version: 1
+geometry_viewpoint: natural_earth_de_facto
+# MUST remain false. Disputed / breakaway polygons never inherit a sovereign μ.
+inherit_mu_to_disputed: false
+omit_from_choropleth:
+  - ATA
+excluded_territory_iso3: []
+# Placeholders until the NE 5.1.1 disputed/breakaway join (PR 8).
+# Direct estimate rows for these ADM0_A3 codes still win; inheritance does not.
+disputed_no_estimate_adm0_a3:
+  - B57
+  - KAS
+  - CYN
+  - SAH
+notes: >
+  Natural Earth de facto Admin 0. Disputed / breakaway polygons do not
+  inherit a sovereign μ. A BYO row whose iso3/ADM0_A3 matches the feature
+  is status=ok. Tooltip "Not independently estimated" only when there is
+  no matching estimate row.

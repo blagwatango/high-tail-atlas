@@ -35,7 +35,14 @@ The export is written to `web/out/`. Optional project-pages prefix: set `NEXT_PU
 
 ## Pipeline (`pipeline/`)
 
-Python ingest (ISO-3 normalize, tail probabilities, UN population join) lands in later work. Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
+ISO-3 join keys are normalized in `pipeline/src/hightail/normalize.py` using `data/overrides/iso3_overrides.yaml` (aliases, `never_map`, ISO-2 exceptions) and `data/overrides/territory_policy.yaml`. Disputed polygons do not inherit a sovereign μ (`inherit_mu_to_disputed: false`). Tail probabilities and UN population join land in later work. Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
+
+```bash
+cd pipeline
+python -m venv .venv
+.venv/Scripts/python -m pip install -e ".[dev]"   # Windows; use .venv/bin/python on Unix
+.venv/Scripts/python -m pytest
+```
 
 ## Product constraints
 

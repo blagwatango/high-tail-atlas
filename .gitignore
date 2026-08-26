@@ -5,6 +5,8 @@ dist
 __pycache__
 .venv
 *.pyc
+*.egg-info
+.pytest_cache
 .DS_Store
 playwright-report
 test-results
