@@ -60,3 +60,28 @@ export function formatPHat(
       return surface === "drawer" ? "Failed validation (quality E)" : "";
   }
 }
+
+/**
+ * Headcount is an order-of-magnitude context number, not a census.
+ * `~` marks the estimate; `"<1"` is the floor after integer rounding.
+ */
+export function formatEstimatedN(n: number | null): string {
+  if (n == null) return "—";
+  if (n < 1) return "<1";
+  return `~${n.toLocaleString("en-US")}`;
+}
+
+function formatSigmaNumber(sigma: number): string {
+  if (Number.isInteger(sigma)) return String(sigma);
+  return (Math.round(sigma * 10) / 10).toFixed(1);
+}
+
+/** “15 (assumed)” vs “12.4 (source)”. */
+export function formatSigma(
+  sigma: number | null,
+  sigmaSource: "source" | "assumed_15" | null,
+): string {
+  if (sigma == null || sigmaSource == null) return "—";
+  const n = formatSigmaNumber(sigma);
+  return sigmaSource === "assumed_15" ? `${n} (assumed)` : `${n} (source)`;
+}

@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import { expect, test } from "@playwright/test";
 
 test("home page includes modeled estimates caveat", async ({ page }) => {
@@ -16,19 +17,24 @@ test("default filters yield at least one ok country above min population", async
   const count = Number(await list.getAttribute("data-count"));
   expect(count).toBeGreaterThanOrEqual(1);
 
-  const rows = list.locator("li");
+  const rows = list.locator("tbody tr");
   const n = await rows.count();
   expect(n).toBe(count);
   expect(n).toBeGreaterThanOrEqual(1);
 
+  const pops: number[] = [];
   for (let i = 0; i < n; i++) {
     const row = rows.nth(i);
     await expect(row).toHaveAttribute("data-status", "ok");
     const pop = Number(await row.getAttribute("data-population"));
     expect(pop).toBeGreaterThanOrEqual(250_000);
+    pops.push(pop);
     const quality = await row.getAttribute("data-quality");
     expect(quality).not.toBe("E");
     expect(quality).not.toBe("D");
+  }
+  for (let i = 1; i < pops.length; i++) {
+    expect(pops[i - 1]).toBeGreaterThanOrEqual(pops[i]);
   }
 
   const status = page.getByTestId("status-line");
@@ -61,4 +67,36 @@ test("home copy avoids ranking chrome", async ({ page }) => {
       name: "Estimated share of population modeled at IQ ≥ 130",
     }),
   ).toBeVisible();
+  await expect(page.getByText("not an IQ rank", { exact: false })).toBeVisible();
+});
+
+test("CSV download is modeled estimates, not a ranking file", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.getByTestId("filtered-ok-rows")).toBeVisible({
+    timeout: 30_000,
+  });
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByTestId("download-csv").click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("high-tail-atlas-estimates.csv");
+  const path = await download.path();
+  expect(path).toBeTruthy();
+  const text = readFileSync(path!, "utf8");
+  expect(text).toContain("Modeled estimates, not measurements");
+  expect(text).toContain("p_hat_display");
+  expect(text).toContain("p_hat_proportion");
+  expect(text).not.toContain("p_hat_pct");
+});
+
+test("country name click selects the row", async ({ page }) => {
+  await page.goto("/");
+  const table = page.getByTestId("filtered-ok-rows");
+  await expect(table).toBeVisible({ timeout: 30_000 });
+  const first = table.locator("tbody tr").first();
+  const iso3 = await first.getAttribute("data-iso3");
+  expect(iso3).toBeTruthy();
+  await first.getByRole("button").click();
+  await expect(first).toHaveAttribute("data-selected", "true");
 });
