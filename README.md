@@ -37,6 +37,8 @@ The export is written to `web/out/`. Optional project-pages prefix: set `NEXT_PU
 
 ISO-3 join keys are normalized in `pipeline/src/hightail/normalize.py` using `data/overrides/iso3_overrides.yaml` (aliases, `never_map`, ISO-2 exceptions) and `data/overrides/territory_policy.yaml`. Disputed polygons do not inherit a sovereign μ (`inherit_mu_to_disputed: false`). Ingest validates a UTF-8 estimates CSV and never fills missing μ from neighbors. Tail probabilities and UN population join land in later work. Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
 
+Post-v1 Becker/PISA adapters in `pipeline/src/hightail/adapters/` **refuse to run** unless `HIGHTAIL_ADAPTER_LICENSE_OK=1` and a local uncommitted source file are provided. They never download or vendor contested tables. See [`pipeline/src/hightail/adapters/README.md`](pipeline/src/hightail/adapters/README.md).
+
 ```bash
 cd pipeline
 python -m venv .venv
