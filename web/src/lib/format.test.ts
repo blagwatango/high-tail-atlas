@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   REFERENCE_P,
   REFERENCE_P_LABEL,
+  formatEstimatedN,
   formatPHat,
+  formatSigma,
   type FormatSurface,
 } from "./format";
 
@@ -97,5 +99,22 @@ describe("formatPHat D/E/null", () => {
     expect(formatPHat(null, "A", "table")).toBe("—");
     expect(formatPHat(2.275e-2, null, "map")).toBe("—");
     expect(formatPHat(null, null, "drawer")).toBe("No estimate");
+  });
+});
+
+describe("formatEstimatedN", () => {
+  it("prefixes estimates with ~ and floors sub-1 counts", () => {
+    expect(formatEstimatedN(null)).toBe("—");
+    expect(formatEstimatedN(0)).toBe("<1");
+    expect(formatEstimatedN(22_750)).toBe("~22,750");
+  });
+});
+
+describe("formatSigma", () => {
+  it("labels assumed 15 vs a source SD", () => {
+    expect(formatSigma(15, "assumed_15")).toBe("15 (assumed)");
+    expect(formatSigma(12.4, "source")).toBe("12.4 (source)");
+    expect(formatSigma(15, "source")).toBe("15 (source)");
+    expect(formatSigma(null, null)).toBe("—");
   });
 });

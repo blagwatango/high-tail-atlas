@@ -14,6 +14,7 @@ import {
 import { formatPHat } from "@/lib/format";
 import { AtlasFile } from "@/lib/schema";
 import { dashboardParsers } from "@/lib/url-state";
+import { CountryTable } from "./CountryTable";
 import { FilterBar } from "./FilterBar";
 import { LollipopChart } from "./LollipopChart";
 
@@ -85,6 +86,15 @@ export function Dashboard() {
     () => atlas?.countries.find((row) => row.iso3 === selectedIso3) ?? null,
     [atlas, selectedIso3],
   );
+
+  const popYear = useMemo(() => {
+    const years = new Set(
+      shown
+        .map((row) => row.pop_year)
+        .filter((year): year is number => year != null),
+    );
+    return years.size === 1 ? [...years][0] : null;
+  }, [shown]);
 
   if (error) {
     return (
@@ -196,33 +206,22 @@ export function Dashboard() {
 
       <section
         aria-labelledby="table-heading"
-        className="rounded-md border border-dashed border-stone-300 bg-white p-4"
+        className="rounded-md border border-stone-200 bg-white p-4"
       >
         <h2 id="table-heading" className="text-lg font-semibold">
           Country estimates
         </h2>
-        <p className="mt-2 text-sm text-stone-600">
-          Full sortable table is not in this release. Countries below pass the
-          current filters (quality E omitted).
-        </p>
-        <ul
-          data-testid="filtered-ok-rows"
-          data-count={shown.length}
-          className="mt-3 columns-2 gap-4 text-sm sm:columns-3"
-        >
-          {shown.map((row) => (
-            <li
-              key={row.iso3}
-              data-iso3={row.iso3}
-              data-status={row.status}
-              data-quality={row.quality ?? ""}
-              data-population={row.population ?? ""}
-            >
-              {row.name}{" "}
-              <span className="font-mono text-xs text-stone-500">{row.iso3}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-3">
+          <CountryTable
+            rows={shown}
+            sort={filters.sort}
+            datasetId={atlas.manifest.dataset_id}
+            popYear={popYear}
+            selectedIso3={selectedIso3}
+            onSortChange={(next) => void setFilters({ sort: next })}
+            onSelectIso3={setSelectedIso3}
+          />
+        </div>
       </section>
     </div>
   );
