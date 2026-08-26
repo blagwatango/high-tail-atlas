@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: High-Tail Atlas
+message: Cite this software and its dataset_id, not a national-IQ compilation.
+type: software
+authors:
+  - family-names: TBD
+    given-names: TBD
+date-released: "2026-08-25"
+license: MIT
+repository-code: TBD

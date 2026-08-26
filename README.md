@@ -1,0 +1,42 @@
+# High-Tail Atlas
+
+Modeled estimates of the share of each country’s population at IQ ≥ 130. This is **not** a ranking of people, nations, or worth. Country means are estimates; the dashboard will compute a normal right-tail probability, not a census of high-IQ people.
+
+v1 will ship a labeled **DEMO** dataset. Do not treat demo figures as measurements.
+
+## Requirements
+
+- Node.js 24 (design mentioned 22 LTS; 24 is supported)
+- [pnpm](https://pnpm.io) 10.x via Corepack, used **inside `web/`**
+- Python 3.11+ for the pipeline (not used in this scaffold)
+
+## Web app (`web/`)
+
+Static files live at `web/public/` (sibling of `web/src/`, `web/package.json`, and `web/next.config.ts`). **Do not put `public/` inside `src/`.** Next.js App Router will not serve `web/src/public/`; that path 404s.
+
+Enable pnpm, then install and run from `web/`:
+
+```bash
+corepack enable
+corepack prepare pnpm@10.15.0 --activate
+cd web
+pnpm install
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). The site is a static export (`output: "export"`, trailing slashes).
+
+```bash
+cd web
+pnpm build
+```
+
+The export is written to `web/out/`. Optional project-pages prefix: set `NEXT_PUBLIC_BASE_PATH` (for example `/high-tail-atlas`) before `pnpm build`. `next.config.ts` does not invent that variable.
+
+## Pipeline (`pipeline/`)
+
+Python ingest (ISO-3 normalize, tail probabilities, UN population join) lands in later work. Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
+
+## Product constraints
+
+Written in full in [`AGENTS.md`](AGENTS.md) and [`web/src/app/about/page.tsx`](web/src/app/about/page.tsx). Short version: no neighbor imputation of missing country means; no racial, ethnic, religious, or immigrant-origin choropleths; no contest-of-nations framing; do not vendor Lynn/Vanhanen/Becker national-IQ tables.

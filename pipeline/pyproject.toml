@@ -1,0 +1,20 @@
+[project]
+name = "hightail"
+version = "0.0.0"
+description = "Build-time pipeline for High-Tail Atlas modeled estimates."
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "pandas",
+    "scipy",
+    "jsonschema",
+    "pyyaml",
+    "pycountry",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
