@@ -40,6 +40,12 @@ export default function RootLayout({
                 >
                   Methodology
                 </Link>
+                <Link
+                  href="/data/"
+                  className="underline-offset-2 hover:underline"
+                >
+                  Data
+                </Link>
               </nav>
             </div>
           </header>

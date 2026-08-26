@@ -6,8 +6,7 @@ const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
   images: { unoptimized: true },
-  // Playwright hits 127.0.0.1; Next 16 otherwise blocks /_next chunks.
-  allowedDevOrigins: ["127.0.0.1"],
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   ...(basePath ? { basePath } : {}),
 };
 

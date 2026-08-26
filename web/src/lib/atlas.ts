@@ -22,6 +22,13 @@ export function worldTopoHrefFrom(origin: string, basePath: string): string {
   return publicDataHrefFrom(origin, basePath, "world-110m.topo.json");
 }
 
+/** Path-only helper for RSC links (no window). */
+export function publicDataPath(file = "atlas.json"): string {
+  const prefix = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  const base = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
+  return `${base}/data/${file}`;
+}
+
 /** Browser-only. Call from a client island, not during RSC render. */
 export function atlasHref(): string {
   return atlasHrefFrom(
