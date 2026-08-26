@@ -64,4 +64,24 @@ describe("choroplethFill", () => {
       choroplethFill({ pHat: 0.02, status: "ok", filteredOut: false }),
     ).toBe("#8c96c6");
   });
+
+  it("keeps no-estimate as no-data even when filteredOut is true", () => {
+    expect(
+      choroplethFill({
+        pHat: null,
+        status: "no_estimate",
+        filteredOut: true,
+      }),
+    ).toBe(COLOR_NO_DATA);
+    expect(
+      choroplethFill({ pHat: null, status: "no_iso", filteredOut: true }),
+    ).toBe(COLOR_NO_DATA);
+    expect(
+      choroplethFill({
+        pHat: null,
+        status: "excluded_territory",
+        filteredOut: true,
+      }),
+    ).toBe(COLOR_NO_DATA);
+  });
 });

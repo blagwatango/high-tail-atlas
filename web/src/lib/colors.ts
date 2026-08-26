@@ -43,7 +43,9 @@ export function choroplethFill(opts: {
   status: "ok" | "no_estimate" | "no_iso" | "excluded_territory";
   filteredOut: boolean;
 }): string {
-  if (opts.filteredOut) return COLOR_FILTERED;
+  // Status first: no_estimate / no_iso / excluded_territory are no-data,
+  // even if the caller passed filteredOut because matchesFilters is false.
   if (opts.status !== "ok" || opts.pHat == null) return COLOR_NO_DATA;
+  if (opts.filteredOut) return COLOR_FILTERED;
   return binFill(opts.pHat);
 }
