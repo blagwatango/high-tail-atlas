@@ -13,6 +13,7 @@ import {
 import { AtlasFile } from "@/lib/schema";
 import { dashboardParsers } from "@/lib/url-state";
 import { FilterBar } from "./FilterBar";
+import { LollipopChart } from "./LollipopChart";
 
 export function Dashboard() {
   const [filters, setFilters] = useQueryStates(dashboardParsers);
@@ -136,12 +137,7 @@ export function Dashboard() {
         aria-labelledby="lollipop-heading"
         className="rounded-md border border-dashed border-stone-300 bg-white p-4"
       >
-        <h2 id="lollipop-heading" className="text-lg font-semibold">
-          Country comparison (lollipop)
-        </h2>
-        <p className="mt-2 text-sm text-stone-600">
-          Comparison chart of estimated shares is not in this release.
-        </p>
+        <LollipopChart countries={shown} sort={filters.sort} />
       </section>
 
       <section

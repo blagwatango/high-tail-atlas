@@ -62,3 +62,33 @@ test("home copy avoids ranking chrome", async ({ page }) => {
     }),
   ).toBeVisible();
 });
+
+test("lollipop binds percent shares and the 2.28% reference", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const chart = page.getByTestId("lollipop");
+  await expect(chart).toBeVisible({ timeout: 30_000 });
+  await expect(chart.getByTestId("lollipop-cap")).toHaveText(
+    "40 countries in current sort (default: largest populations).",
+  );
+  await expect(
+    chart.getByText("Estimated % of population modeled at IQ ≥ 130"),
+  ).toBeVisible();
+  await expect(chart.getByText("2.28%", { exact: true })).toBeVisible();
+
+  const rows = chart.getByTestId("lollipop-rows").locator("li");
+  await expect(rows.first()).toHaveAttribute("data-iso3", "IND");
+  const pPct = Number(await rows.first().getAttribute("data-p-pct"));
+  expect(pPct).toBeGreaterThan(1);
+  expect(pPct).toBeLessThan(20);
+
+  const n = await rows.count();
+  expect(n).toBeGreaterThanOrEqual(1);
+  expect(n).toBeLessThanOrEqual(40);
+  const heads = chart.locator("[data-testid='lollipop-head']");
+  await expect(heads).toHaveCount(n);
+  await expect(heads.first()).toHaveAttribute("data-quality", "C");
+  await expect(heads.first()).toHaveAttribute("fill", "#ffffff");
+});
+
