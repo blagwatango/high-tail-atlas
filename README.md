@@ -75,6 +75,8 @@ Manual: download `static-site-project-pages` and publish `out/` (or copy to the 
 
 ISO-3 join keys are normalized in `pipeline/src/hightail/normalize.py` using `data/overrides/iso3_overrides.yaml` (aliases, `never_map`, ISO-2 exceptions) and `data/overrides/territory_policy.yaml`. Disputed polygons do not inherit a sovereign μ (`inherit_mu_to_disputed: false`). Ingest validates a UTF-8 estimates CSV and never fills missing μ from neighbors. The build command joins UN WPP 2024 Medium 2025 headcounts, computes \(p = 1-\Phi((130-\mu)/\sigma)\), joins Natural Earth 110m geometry (`web/public/data/world-110m.topo.json`; Antarctica omitted), and writes `web/public/data/atlas.json`. Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
 
+Post-v1 Becker/PISA adapters in `pipeline/src/hightail/adapters/` **refuse to run** unless `HIGHTAIL_ADAPTER_LICENSE_OK=1` and a local uncommitted source file are provided. They never download or vendor contested tables. See [`pipeline/src/hightail/adapters/README.md`](pipeline/src/hightail/adapters/README.md).
+
 ```bash
 cd pipeline
 python -m venv .venv

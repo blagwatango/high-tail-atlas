@@ -6,6 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from hightail.adapters import AdapterError, load_becker, load_pisa, write_estimates_csv
 from hightail.emit import EmitError, build_atlas
 from hightail.ingest import (
     ON_DUPLICATE_CHOICES,
@@ -127,6 +128,42 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional Parquet output (not written in this version)",
     )
+
+    adapter_parser = subparsers.add_parser(
+        "adapter",
+        help="Post-v1 source adapters (legal-review gate; not v1 default data).",
+    )
+    adapter_sub = adapter_parser.add_subparsers(dest="adapter_name", required=True)
+
+    def _add_adapter_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument(
+            "--source",
+            required=True,
+            help="Local uncommitted source file (never a URL)",
+        )
+        p.add_argument(
+            "--license-ok",
+            action="store_true",
+            help="Explicit license-review flag (or set HIGHTAIL_ADAPTER_LICENSE_OK=1)",
+        )
+        p.add_argument(
+            "--out",
+            default=None,
+            help="Optional estimates CSV path (do not commit contested tables)",
+        )
+
+    _add_adapter_args(
+        adapter_sub.add_parser(
+            "becker",
+            help="Becker NIQ adapter (blocked without license gate)",
+        )
+    )
+    _add_adapter_args(
+        adapter_sub.add_parser(
+            "pisa",
+            help="PISA adapter (relabels metric; not IQ)",
+        )
+    )
     return parser
 
 
@@ -190,6 +227,23 @@ def _cmd_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_adapter(args: argparse.Namespace) -> int:
+    loader = load_becker if args.adapter_name == "becker" else load_pisa
+    try:
+        result = loader(args.source, license_ok=args.license_ok)
+    except AdapterError as exc:
+        print(f"adapter error: {exc}", file=sys.stderr)
+        return 1
+    print(f"adapter: {args.adapter_name}")
+    print(f"rows: {len(result.rows)}")
+    print(f"imputed: {result.n_imputed}")
+    print(f"metric_label: {result.metric_label}")
+    if args.out:
+        write_estimates_csv(result, Path(args.out))
+        print(f"wrote: {args.out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
@@ -197,6 +251,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_ingest(args)
     if args.command == "build":
         return _cmd_build(args)
+    if args.command == "adapter":
+        return _cmd_adapter(args)
     parser.error(f"unknown command: {args.command}")
     return 2
 

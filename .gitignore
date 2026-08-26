@@ -10,3 +10,20 @@ __pycache__
 .DS_Store
 playwright-report
 test-results
+
+# Contested / license-encumbered estimate tables must never be committed.
+# Adapters read a local uncommitted path after legal review; they do not vendor.
+data/raw/**/*iq*
+data/raw/**/*IQ*
+data/raw/**/*niq*
+data/raw/**/*NIQ*
+data/raw/**/*lynn*
+data/raw/**/*Lynn*
+data/raw/**/*vanhanen*
+data/raw/**/*Vanhanen*
+data/raw/**/*becker*
+data/raw/**/*Becker*
+data/raw/**/*rindermann*
+data/raw/**/*Rindermann*
+data/raw/**/*viewoniq*
+data/raw/**/*viewOnIQ*
