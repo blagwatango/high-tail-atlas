@@ -1,9 +1,6 @@
 import type { Quality } from "./schema";
 
-/** Proportion; axis / bin math. Quality-A cells of this value format as `2.3%`. */
-export const REFERENCE_P = 0.02275;
-/** Legend, reference-line label, methodology. Never write `2.275%` in the UI. */
-export const REFERENCE_P_LABEL = "2.28%";
+export { REFERENCE_P, REFERENCE_P_LABEL } from "./colors";
 
 export type FormatSurface = "map" | "table" | "drawer";
 
