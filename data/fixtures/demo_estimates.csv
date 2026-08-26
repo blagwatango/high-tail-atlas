@@ -1,0 +1,25 @@
+iso3,name,mu,sigma,mu_se,source,source_url,source_year,sample_n,sample_type,quality,notes
+USA,United States,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+CHN,China,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+IND,India,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+IDN,Indonesia,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+PAK,Pakistan,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+NGA,Nigeria,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+BRA,Brazil,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+BGD,Bangladesh,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+RUS,Russian Federation,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+MEX,Mexico,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+JPN,Japan,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+ETH,Ethiopia,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+PHL,Philippines,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+EGY,Egypt,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+VNM,Viet Nam,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+DEU,Germany,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+TUR,Türkiye,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+FRA,France,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+GBR,United Kingdom,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+ITA,Italy,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+COL,Colombia,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+ZAF,South Africa,110,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+CAN,Canada,100,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
+KOR,Republic of Korea,90,15,,DEMO_FIXTURE,,2026,1,convenience,C,FABRICATED demo fixture; not a measurement
