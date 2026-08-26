@@ -35,7 +35,7 @@ The export is written to `web/out/`. Optional project-pages prefix: set `NEXT_PU
 
 ## Pipeline (`pipeline/`)
 
-ISO-3 join keys are normalized in `pipeline/src/hightail/normalize.py` using `data/overrides/iso3_overrides.yaml` (aliases, `never_map`, ISO-2 exceptions) and `data/overrides/territory_policy.yaml`. Disputed polygons do not inherit a sovereign μ (`inherit_mu_to_disputed: false`). Ingest validates a UTF-8 estimates CSV and never fills missing μ from neighbors. The build command joins UN WPP 2024 Medium 2025 headcounts, computes \(p = 1-\Phi((130-\mu)/\sigma)\), and writes `web/public/data/atlas.json` (`has_geometry` is false until the geometry PR). Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
+ISO-3 join keys are normalized in `pipeline/src/hightail/normalize.py` using `data/overrides/iso3_overrides.yaml` (aliases, `never_map`, ISO-2 exceptions) and `data/overrides/territory_policy.yaml`. Disputed polygons do not inherit a sovereign μ (`inherit_mu_to_disputed: false`). Ingest validates a UTF-8 estimates CSV and never fills missing μ from neighbors. The build command joins UN WPP 2024 Medium 2025 headcounts, computes \(p = 1-\Phi((130-\mu)/\sigma)\), joins Natural Earth 110m geometry (`web/public/data/world-110m.topo.json`; Antarctica omitted), and writes `web/public/data/atlas.json`. Declared dependencies are in `pipeline/pyproject.toml` (`requires-python = ">=3.11"`).
 
 ```bash
 cd pipeline
@@ -53,6 +53,8 @@ python -m hightail.cli build \
 ```
 
 `pipeline/scripts/fetch_wpp.py` rebuilds the WPP extract from a pinned DESA Compact CSV (OWID processed WPP is the allowed fallback). This repo commits a trimmed `data/raw/wpp_extract.csv` fixture plus `data/raw/WPP_PIN.txt`.
+
+`web/public/data/world-110m.topo.json` is Natural Earth Admin 0 Countries 1:110m (v5.1.1, public domain). Antarctica (`ATA`) is omitted. ISO_A3 `-99` features join on `ADM0_A3` with `status=no_iso`. The build fails if `n_geometry_dropped > 0`.
 
 ## Product constraints
 

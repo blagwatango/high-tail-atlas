@@ -12,6 +12,12 @@ from typing import Any, Mapping
 
 from jsonschema import Draft7Validator, FormatChecker
 
+from hightail.geometry import (
+    DEFAULT_GEOMETRY_PATH,
+    GeometryError,
+    assert_has_geometry_in_topo,
+    load_geometry,
+)
 from hightail.ingest import EstimateRecord, IngestResult, ingest_estimates
 from hightail.join import JoinError, JoinResult, join_frame, unmatched_as_dicts
 from hightail.normalize import load_iso3_overrides, load_territory_policy
@@ -29,7 +35,7 @@ POPULATION_SOURCE = (
     "United Nations, DESA/Population Division (2024). "
     "World Population Prospects 2024. Medium variant, mid-year 2025."
 )
-GEOMETRY_SOURCE = "none"
+GEOMETRY_SOURCE_NONE = "none"
 DEMO_DATASET_ID = "demo-quality-c"
 DEMO_SOURCE_NAME = "DEMO_FIXTURE"
 
@@ -137,6 +143,7 @@ def build_manifest(
     records: tuple[EstimateRecord, ...],
     *,
     created_at: str | None = None,
+    geometry_source: str | None = None,
 ) -> dict[str, Any]:
     dataset_id = _dataset_id(records)
     return {
@@ -150,7 +157,7 @@ def build_manifest(
         "phi_implementation": PHI_IMPLEMENTATION,
         "metric_label": METRIC_LABEL,
         "population_source": POPULATION_SOURCE,
-        "geometry_source": GEOMETRY_SOURCE,
+        "geometry_source": geometry_source if geometry_source is not None else GEOMETRY_SOURCE_NONE,
         "estimates_source": _estimates_source(records),
         "caveats_hash": caveats_hash(),
         "n_ok": join.n_ok,
@@ -173,9 +180,12 @@ def assemble_atlas(
     records: tuple[EstimateRecord, ...],
     *,
     created_at: str | None = None,
+    geometry_source: str | None = None,
 ) -> dict[str, Any]:
     atlas = {
-        "manifest": build_manifest(join, records, created_at=created_at),
+        "manifest": build_manifest(
+            join, records, created_at=created_at, geometry_source=geometry_source
+        ),
         "countries": list(join.countries),
         "unmatched_estimates": unmatched_as_dicts(join.unmatched),
     }
@@ -227,6 +237,7 @@ def build_atlas(
     allow_extreme_mu: bool = False,
     on_duplicate: str = "error",
     created_at: str | None = None,
+    geometry_path: Path | str | None = None,
 ) -> dict[str, Any]:
     overrides = load_iso3_overrides(overrides_path)
     policy = load_territory_policy(policy_path)
@@ -239,10 +250,28 @@ def build_atlas(
         schema_path=estimates_schema,
     )
     wpp = load_wpp_extract(population_path, reference_year=reference_year)
+    geom_path = DEFAULT_GEOMETRY_PATH if geometry_path is None else Path(geometry_path)
     try:
-        joined = join_frame(ingest, wpp, policy, allow_unmatched=allow_unmatched)
-    except JoinError as exc:
+        geometry = load_geometry(geom_path, policy=policy, overrides=overrides)
+        if geometry.n_geometry_dropped > 0:
+            raise EmitError(
+                f"n_geometry_dropped={geometry.n_geometry_dropped} > 0"
+            )
+        joined = join_frame(
+            ingest,
+            wpp,
+            policy,
+            allow_unmatched=allow_unmatched,
+            geometry=geometry,
+        )
+        assert_has_geometry_in_topo(joined.countries, geometry)
+    except (JoinError, GeometryError) as exc:
         raise EmitError(str(exc)) from exc
-    atlas = assemble_atlas(joined, ingest.records, created_at=created_at)
+    atlas = assemble_atlas(
+        joined,
+        ingest.records,
+        created_at=created_at,
+        geometry_source=geometry.source,
+    )
     write_atlas(atlas, out_path, schema_path=atlas_schema)
     return atlas

@@ -26,13 +26,17 @@ def test_omit_antarctica_from_choropleth(policy):
 
 
 def test_direct_estimate_for_disputed_adm0_is_ok(overrides, policy):
-    for adm0 in ("B57", "KAS", "CYN", "SAH"):
+    for adm0 in ("B57", "KAS", "CYN", "SAH", "SOL"):
         assert is_disputed_no_estimate(adm0, policy)
         assert allows_direct_estimate(adm0, policy)
         # Direct row keeps the ADM0 join key; it is not rewritten to a sovereign.
         result = resolve_token(adm0, overrides, policy=policy)
         assert result.iso3 == adm0
         assert may_inherit_mu("MAR", adm0, policy) is False
+    assert is_disputed_no_estimate("KOS", policy)
+    assert allows_direct_estimate("KOS", policy)
+    # Kosovo estimates alias to XKX; geometry ADM0 KOS maps the same way.
+    assert resolve_token("KOS", overrides, policy=policy).iso3 == "XKX"
 
 
 def test_taiwan_palestine_kosovo_not_inherited(overrides, policy):
