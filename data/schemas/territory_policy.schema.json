@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "territory_policy.schema.json",
+  "title": "Territory policy",
+  "description": "Geometry viewpoint and disputed-territory rules. Disputed polygons do not inherit a sovereign μ.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "geometry_viewpoint",
+    "inherit_mu_to_disputed",
+    "omit_from_choropleth",
+    "excluded_territory_iso3",
+    "disputed_no_estimate_adm0_a3"
+  ],
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "geometry_viewpoint": {
+      "type": "string",
+      "const": "natural_earth_de_facto"
+    },
+    "inherit_mu_to_disputed": {
+      "type": "boolean",
+      "const": false
+    },
+    "omit_from_choropleth": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z0-9]{3}$" }
+    },
+    "excluded_territory_iso3": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z0-9]{3}$" }
+    },
+    "disputed_no_estimate_adm0_a3": {
+      "type": "array",
+      "description": "Features that must not inherit a sovereign μ. Direct estimate rows still win.",
+      "items": { "type": "string", "pattern": "^[A-Z0-9]{3}$" }
+    },
+    "notes": { "type": "string" }
+  }
+}

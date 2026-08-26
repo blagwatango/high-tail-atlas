@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "estimates.schema.json",
+  "title": "Estimates file",
+  "description": "Input estimate rows (CSV/JSON). Required: iso3 or name, and mu. Empty source_url is allowed.",
+  "oneOf": [
+    { "$ref": "#/definitions/EstimateRow" },
+    {
+      "type": "array",
+      "items": { "$ref": "#/definitions/EstimateRow" }
+    }
+  ],
+  "definitions": {
+    "Quality": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E", "U"]
+    },
+    "SampleType": {
+      "type": "string",
+      "enum": [
+        "adult_representative",
+        "students",
+        "children",
+        "urban",
+        "clinical",
+        "convenience",
+        "imputed",
+        "unknown"
+      ]
+    },
+    "EstimateRow": {
+      "type": "object",
+      "anyOf": [
+        { "required": ["iso3", "mu"] },
+        { "required": ["name", "mu"] }
+      ],
+      "properties": {
+        "iso3": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "^[A-Z]{3}$"
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "mu": {
+          "type": "number",
+          "exclusiveMinimum": 50,
+          "exclusiveMaximum": 130
+        },
+        "sigma": {
+          "type": "number",
+          "exclusiveMinimum": 5,
+          "exclusiveMaximum": 30
+        },
+        "mu_se": { "type": "number", "minimum": 0 },
+        "source": { "type": "string" },
+        "source_url": {
+          "anyOf": [
+            { "type": "string", "format": "uri" },
+            { "type": "string", "maxLength": 0 }
+          ]
+        },
+        "source_year": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2026
+        },
+        "sample_n": { "type": "integer", "minimum": 1 },
+        "sample_type": { "$ref": "#/definitions/SampleType" },
+        "quality": { "$ref": "#/definitions/Quality" },
+        "notes": {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "string", "maxLength": 0 }
+          ]
+        }
+      }
+    }
+  }
+}

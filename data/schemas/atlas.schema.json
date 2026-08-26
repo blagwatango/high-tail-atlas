@@ -1,0 +1,275 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "atlas.schema.json",
+  "title": "AtlasFile",
+  "description": "Pipeline output: manifest + countries union frame + unmatched estimate rows.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest", "countries", "unmatched_estimates"],
+  "properties": {
+    "manifest": { "$ref": "#/definitions/AtlasManifest" },
+    "countries": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/CountryRecord" }
+    },
+    "unmatched_estimates": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/UnmatchedEstimate" }
+    }
+  },
+  "definitions": {
+    "Quality": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E", "U"]
+    },
+    "SampleType": {
+      "type": "string",
+      "enum": [
+        "adult_representative",
+        "students",
+        "children",
+        "urban",
+        "clinical",
+        "convenience",
+        "imputed",
+        "unknown"
+      ]
+    },
+    "UnitInterval": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "CountryRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "iso3",
+        "name",
+        "continent",
+        "region_m49",
+        "mu",
+        "sigma",
+        "sigma_source",
+        "sigma_flag",
+        "mu_se",
+        "p_hat",
+        "p_lo_pm3",
+        "p_hi_pm3",
+        "p_lo_se",
+        "p_hi_se",
+        "population",
+        "pop_year",
+        "estimated_n_ge_130",
+        "quality",
+        "source",
+        "source_short",
+        "source_url",
+        "source_year",
+        "sample_n",
+        "sample_type",
+        "notes",
+        "status",
+        "has_geometry",
+        "tiny_population"
+      ],
+      "properties": {
+        "iso3": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{3}$"
+        },
+        "name": { "type": "string" },
+        "continent": { "type": ["string", "null"] },
+        "region_m49": { "type": ["string", "null"] },
+        "mu": { "type": ["number", "null"] },
+        "sigma": { "type": ["number", "null"] },
+        "sigma_source": {
+          "type": ["string", "null"],
+          "enum": ["source", "assumed_15", null]
+        },
+        "sigma_flag": {
+          "type": ["string", "null"],
+          "enum": ["outside_12_20", null]
+        },
+        "mu_se": { "type": ["number", "null"] },
+        "p_hat": { "$ref": "#/definitions/UnitInterval" },
+        "p_lo_pm3": { "$ref": "#/definitions/UnitInterval" },
+        "p_hi_pm3": { "$ref": "#/definitions/UnitInterval" },
+        "p_lo_se": { "$ref": "#/definitions/UnitInterval" },
+        "p_hi_se": { "$ref": "#/definitions/UnitInterval" },
+        "population": { "type": ["integer", "null"], "minimum": 0 },
+        "pop_year": { "type": ["integer", "null"] },
+        "estimated_n_ge_130": { "type": ["integer", "null"], "minimum": 0 },
+        "quality": {
+          "anyOf": [
+            { "$ref": "#/definitions/Quality" },
+            { "type": "null" }
+          ]
+        },
+        "source": { "type": ["string", "null"] },
+        "source_short": { "type": ["string", "null"] },
+        "source_url": { "type": ["string", "null"] },
+        "source_year": { "type": ["integer", "null"] },
+        "sample_n": { "type": ["integer", "null"] },
+        "sample_type": {
+          "anyOf": [
+            { "$ref": "#/definitions/SampleType" },
+            { "type": "null" }
+          ]
+        },
+        "notes": { "type": ["string", "null"] },
+        "status": {
+          "type": "string",
+          "enum": ["ok", "no_estimate", "no_iso", "excluded_territory"]
+        },
+        "has_geometry": { "type": "boolean" },
+        "tiny_population": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "const": "ok" } },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "quality": { "$ref": "#/definitions/Quality" },
+              "p_hat": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          },
+          "else": {
+            "properties": {
+              "quality": { "type": "null" },
+              "p_hat": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "mu_se": { "type": "null" } },
+            "required": ["mu_se"]
+          },
+          "then": {
+            "properties": {
+              "p_lo_se": { "type": "null" },
+              "p_hi_se": { "type": "null" }
+            }
+          },
+          "else": {
+            "properties": {
+              "p_lo_se": { "type": "number", "minimum": 0, "maximum": 1 },
+              "p_hi_se": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        }
+      ]
+    },
+    "UnmatchedEstimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_name", "raw_iso3", "mu", "reason"],
+      "properties": {
+        "raw_name": { "type": ["string", "null"] },
+        "raw_iso3": { "type": ["string", "null"] },
+        "mu": { "type": "number" },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "unmapped_name",
+            "invalid_iso3",
+            "ambiguous_name",
+            "never_map"
+          ]
+        }
+      }
+    },
+    "AtlasManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "dataset_id",
+        "created_at",
+        "pipeline_version",
+        "threshold_iq",
+        "default_sigma",
+        "formula",
+        "phi_implementation",
+        "metric_label",
+        "population_source",
+        "geometry_source",
+        "estimates_source",
+        "caveats_hash",
+        "n_ok",
+        "n_no_estimate",
+        "n_no_iso",
+        "n_excluded_territory",
+        "n_unmatched",
+        "n_quality",
+        "flags",
+        "assumptions"
+      ],
+      "properties": {
+        "schema_version": { "type": "integer", "const": 1 },
+        "dataset_id": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "pipeline_version": { "type": "string" },
+        "threshold_iq": { "type": "integer", "const": 130 },
+        "default_sigma": { "type": "number", "const": 15 },
+        "formula": {
+          "type": "string",
+          "const": "p = 1 - Phi((130 - mu) / sigma)"
+        },
+        "phi_implementation": {
+          "type": "string",
+          "const": "scipy.stats.norm.sf"
+        },
+        "metric_label": { "type": "string" },
+        "population_source": { "type": "string" },
+        "geometry_source": { "type": "string" },
+        "estimates_source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "citation", "url", "license"],
+          "properties": {
+            "name": { "type": "string" },
+            "citation": { "type": ["string", "null"] },
+            "url": { "type": ["string", "null"] },
+            "license": { "type": ["string", "null"] }
+          }
+        },
+        "caveats_hash": { "type": "string" },
+        "n_ok": { "type": "integer" },
+        "n_no_estimate": { "type": "integer" },
+        "n_no_iso": { "type": "integer" },
+        "n_excluded_territory": { "type": "integer" },
+        "n_unmatched": { "type": "integer" },
+        "n_quality": {
+          "type": "object",
+          "propertyNames": {
+            "enum": ["A", "B", "C", "D", "E", "U"]
+          },
+          "additionalProperties": { "type": "integer" }
+        },
+        "flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "show_continuous_scale",
+            "allow_quality_d",
+            "demo_badge"
+          ],
+          "properties": {
+            "show_continuous_scale": { "type": "boolean" },
+            "allow_quality_d": { "type": "boolean" },
+            "demo_badge": { "type": "boolean" }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

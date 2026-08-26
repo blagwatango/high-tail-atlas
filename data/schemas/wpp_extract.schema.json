@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "wpp_extract.schema.json",
+  "title": "WPP extract",
+  "description": "One row per ISO-3 for the reference year. population is persons (not thousands of persons).",
+  "type": "array",
+  "items": { "$ref": "#/definitions/WppExtractRow" },
+  "definitions": {
+    "WppExtractRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "iso3",
+        "name",
+        "population",
+        "pop_year",
+        "variant",
+        "region_m49",
+        "continent"
+      ],
+      "properties": {
+        "iso3": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "name": { "type": "string", "minLength": 1 },
+        "population": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Persons, not thousands. round(PopTotal * 1000)."
+        },
+        "pop_year": { "type": "integer" },
+        "variant": { "type": "string", "const": "Medium" },
+        "region_m49": { "type": "string", "minLength": 1 },
+        "continent": {
+          "type": "string",
+          "enum": ["Africa", "Americas", "Asia", "Europe", "Oceania"]
+        }
+      }
+    }
+  }
+}

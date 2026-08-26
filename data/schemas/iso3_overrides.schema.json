@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "iso3_overrides.schema.json",
+  "title": "ISO-3 overrides",
+  "description": "Name/code aliases, never-map tokens, and ISO-2 exceptions. Join key is ISO 3166-1 alpha-3.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "aliases", "never_map", "iso2_overrides"],
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "aliases": {
+      "type": "object",
+      "description": "Source token (name, ISO-2, or non-canonical ISO-3) to canonical ISO-3.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[A-Z]{3}$"
+      }
+    },
+    "never_map": {
+      "type": "array",
+      "description": "Names that must fail closed rather than guess.",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "iso2_overrides": {
+      "type": "object",
+      "description": "ISO-2 exceptions (e.g. NA → NAM).",
+      "propertyNames": { "type": "string", "pattern": "^[A-Z]{2}$" },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[A-Z]{3}$"
+      }
+    }
+  }
+}
