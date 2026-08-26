@@ -23,7 +23,7 @@ Do **not** create the repo under `mrtully-bot`.
 |---|---|
 | Git repo | `C:\Users\mrtul\Projects\high-tail-atlas` |
 | Complete branch | `high-tail-atlas` |
-| Tip commit | `fbd2a2d30ec057863585e6d4798b26538de3e05d` — `merge: integrate legal-gated adapters into complete tree` |
+| Tip commit | `edf0fc45c29645e3c995484e93f82e6b759ef090` — `docs: session handoff and approved design document` (parent `fbd2a2d` is the complete product merge) |
 | `main` | empty initial commit only (`3d56b15`) — **do not reset this branch onto main without asking** |
 | Remote | **none** (`git remote -v` is empty) |
 | Design doc | `docs/design.md` (copied from the design-skill scratch file) |
@@ -68,7 +68,7 @@ Stack: Next.js 16.3.3 `output: "export"`, React 19, TypeScript 5.8.3, Tailwind 4
 cd C:\Users\mrtul\Projects\high-tail-atlas
 git checkout high-tail-atlas
 git log -1 --oneline
-# expect: fbd2a2d merge: integrate legal-gated adapters into complete tree
+# expect: edf0fc4 docs: session handoff and approved design document
 
 cd web
 corepack prepare pnpm@10.15.0 --activate
@@ -128,7 +128,7 @@ Continue High-Tail Atlas from the local repo. Do not start over.
 
 1. Read C:\Users\mrtul\Projects\high-tail-atlas\HANDOFF.md and docs/design.md.
 2. Call GitHub get_me. If login is not blagwatango, stop.
-3. Working tree: C:\Users\mrtul\Projects\high-tail-atlas branch high-tail-atlas (tip fbd2a2d).
+3. Working tree: C:\Users\mrtul\Projects\high-tail-atlas branch high-tail-atlas (tip edf0fc4).
 4. Create github.com/blagwatango/high-tail-atlas and push this branch. Do not use mrtully-bot as owner.
 5. Confirm the remote and the GitHub URL when done.
 ```
