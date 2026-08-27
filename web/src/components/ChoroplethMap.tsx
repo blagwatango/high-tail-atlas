@@ -168,7 +168,7 @@ export function ChoroplethMap({
                 height={height}
                 viewBox={`0 0 ${width} ${height}`}
                 role="img"
-                aria-label="World map of modeled share of population at IQ ≥ 130"
+                aria-label="World map of modeled share of 15-year-olds at PISA mathematics ≥ 700"
                 style={{
                   cursor: zoom.isDragging ? "grabbing" : "grab",
                   touchAction: "none",

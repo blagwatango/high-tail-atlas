@@ -6,7 +6,7 @@ export const LOLLIPOP_CAP = 40;
 export const LOLLIPOP_CAP_LABEL =
   "40 countries in current sort (default: largest populations).";
 export const LOLLIPOP_AXIS_TITLE =
-  "Estimated % of population modeled at IQ ≥ 130";
+  "Estimated % of 15-year-olds modeled at PISA mathematics ≥ 700";
 export const LOLLIPOP_TITLE = "Country comparison (lollipop)";
 
 export type LollipopRow = CountryRecord & {

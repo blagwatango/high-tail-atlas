@@ -54,7 +54,7 @@ export function mapTooltipText(row: CountryRecord): string {
 
   const lines = [
     row.name,
-    `Estimated share modeled at IQ ≥ 130: ${share}`,
+    `Estimated share modeled at PISA mathematics ≥ 700: ${share}`,
     "This is a model output, not a count.",
     `Quality: ${qualityLabel} · Source year: ${year}`,
     `Source: ${source}`,

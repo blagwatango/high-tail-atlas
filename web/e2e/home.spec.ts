@@ -41,10 +41,12 @@ test("default filters yield at least one ok country above min population", async
   await expect(status).toContainText(/Showing \d+ of \d+ countries with estimates/);
 });
 
-test("demo dataset shows a DEMO DATA badge", async ({ page }) => {
+test("PISA dataset does not show a DEMO DATA badge", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByTestId("demo-badge")).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId("demo-badge")).toHaveText("DEMO DATA");
+  await expect(page.getByTestId("filtered-ok-rows")).toBeVisible({
+    timeout: 30_000,
+  });
+  await expect(page.getByTestId("demo-badge")).toHaveCount(0);
 });
 
 test("demo choropleth has at least one data-bin country", async ({ page }) => {
@@ -67,10 +69,10 @@ test("demo choropleth has at least one data-bin country", async ({ page }) => {
     "#e5e7eb",
   );
   await expect(page.getByTestId("color-legend")).toContainText(
-    "Modeled share of population at IQ ≥ 130 (normal tail). Bins are coarse on purpose.",
+    "Modeled share of 15-year-olds at PISA mathematics ≥ 700 (normal tail). Bins are coarse on purpose.",
   );
   await expect(page.getByTestId("color-legend")).toContainText(
-    "μ=100, σ=15 → 2.28%.",
+    "μ=500, σ=100 → 2.28%.",
   );
 });
 
@@ -83,9 +85,11 @@ test("clicking a filled country opens the detail drawer", async ({ page }) => {
   await expect(drawer).toBeVisible();
   await expect(drawer).toHaveAttribute("data-iso3", "USA");
   await expect(drawer).toContainText("United States");
-  await expect(drawer).toContainText("Estimated share modeled at IQ ≥ 130");
+  await expect(drawer).toContainText(
+    "Estimated share modeled at PISA mathematics ≥ 700",
+  );
   await expect(drawer.getByTestId("formula-block")).toHaveText(
-    "1 − Φ((130 − 100) / 15) = 2.28%",
+    "1 − Φ((700 − 465) / 100) = 0.94%",
   );
   await expect(drawer.getByTestId("drawer-band")).toHaveAttribute(
     "data-band-kind",
@@ -119,7 +123,7 @@ test("home copy avoids ranking chrome", async ({ page }) => {
   ).toBeVisible();
   await expect(
     page.getByRole("heading", {
-      name: "Estimated share of population modeled at IQ ≥ 130",
+      name: "Estimated share of 15-year-olds modeled at PISA mathematics ≥ 700",
     }),
   ).toBeVisible();
   await expect(page.getByText("not an IQ rank", { exact: false })).toBeVisible();
@@ -172,14 +176,16 @@ test("lollipop binds percent shares and the 2.28% reference", async ({
     "40 countries in current sort (default: largest populations).",
   );
   await expect(
-    chart.getByText("Estimated % of population modeled at IQ ≥ 130"),
+    chart.getByText(
+      "Estimated % of 15-year-olds modeled at PISA mathematics ≥ 700",
+    ),
   ).toBeVisible();
   await expect(chart.getByText("2.28%", { exact: true })).toBeVisible();
 
   const rows = chart.getByTestId("lollipop-rows").locator("li");
-  await expect(rows.first()).toHaveAttribute("data-iso3", "IND");
+  await expect(rows.first()).toHaveAttribute("data-iso3", "USA");
   const pPct = Number(await rows.first().getAttribute("data-p-pct"));
-  expect(pPct).toBeGreaterThan(1);
+  expect(pPct).toBeGreaterThan(0.1);
   expect(pPct).toBeLessThan(20);
 
   const n = await rows.count();
@@ -187,8 +193,8 @@ test("lollipop binds percent shares and the 2.28% reference", async ({
   expect(n).toBeLessThanOrEqual(40);
   const heads = chart.locator("[data-testid='lollipop-head']");
   await expect(heads).toHaveCount(n);
-  await expect(heads.first()).toHaveAttribute("data-quality", "C");
-  await expect(heads.first()).toHaveAttribute("fill", "#ffffff");
+  await expect(heads.first()).toHaveAttribute("data-quality", "B");
+  await expect(heads.first()).toHaveAttribute("fill", "#9ebcda");
 });
 
 test("lollipop row click opens the country drawer", async ({ page }) => {

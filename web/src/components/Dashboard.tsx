@@ -186,7 +186,7 @@ export function Dashboard() {
         className="rounded-md border border-stone-200 bg-white p-4"
       >
         <h2 id="map-heading" className="text-lg font-semibold">
-          Estimated share of population modeled at IQ ≥ 130
+          {atlas.manifest.metric_label}
         </h2>
         <p className="mt-1 text-sm text-stone-600">
           Visual overview. Keyboard path:{" "}

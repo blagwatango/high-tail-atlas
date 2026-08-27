@@ -7,10 +7,11 @@ import {
   formatSigma,
 } from "@/lib/format";
 import type { CountryRecord, SampleType } from "@/lib/schema";
+import { PISA_THRESHOLD } from "@/lib/copy";
 import { FormulaBlock, formatFormulaPercent } from "./FormulaBlock";
 
 export const WHAT_THIS_IS_NOT = [
-  "This is not a census of people at IQ ≥ 130.",
+  "This is not a census of people at PISA mathematics ≥ 700.",
   "It is a modeled estimate, not a ranking of people, nations, or worth.",
 ] as const;
 
@@ -76,7 +77,7 @@ function formatPopulation(
 }
 
 function pm3Copy(lo: number, hi: number): string {
-  return `Sensitivity to ±3 IQ points in the assumed mean (${formatBandRange(lo, hi)}; ~0.2σ if σ=15) — not a statistical confidence interval.`;
+  return `Sensitivity to ±20 PISA points in the assumed mean (${formatBandRange(lo, hi)}; ~0.2σ if σ=100) — not a statistical confidence interval.`;
 }
 
 function seCopy(lo: number, hi: number): string {
@@ -129,7 +130,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
       </div>
 
       <p data-testid="drawer-share" className="mt-4">
-        Estimated share modeled at IQ ≥ 130:{" "}
+        Estimated share modeled at PISA mathematics ≥ 700:{" "}
         {formatPHat(country.p_hat, country.quality, "drawer")}
       </p>
 
@@ -156,7 +157,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
             Formula
           </h4>
           <div className="mt-1">
-            <FormulaBlock mu={mu} sigma={sigma} />
+            <FormulaBlock mu={mu} sigma={sigma} threshold={PISA_THRESHOLD} />
           </div>
         </section>
       ) : null}
@@ -178,7 +179,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
           </dd>
           <dt className="text-stone-600">Population</dt>
           <dd>{formatPopulation(country.population, country.pop_year)}</dd>
-          <dt className="text-stone-600">Est. people ≥ 130</dt>
+          <dt className="text-stone-600">Est. people (total pop × share)</dt>
           <dd>{formatEstimatedN(country.estimated_n_ge_130)}</dd>
         </dl>
       </section>

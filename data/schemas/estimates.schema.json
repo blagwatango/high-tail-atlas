@@ -45,12 +45,12 @@
         "mu": {
           "type": "number",
           "exclusiveMinimum": 50,
-          "exclusiveMaximum": 130
+          "exclusiveMaximum": 800
         },
         "sigma": {
           "type": "number",
           "exclusiveMinimum": 5,
-          "exclusiveMaximum": 30
+          "exclusiveMaximum": 150
         },
         "mu_se": { "type": "number", "minimum": 0 },
         "source": { "type": "string" },

@@ -176,16 +176,20 @@ def test_committed_atlas_json():
     assert COMMITTED.is_file(), "web/public/data/atlas.json must be committed"
     atlas = json.loads(COMMITTED.read_text(encoding="utf-8"))
     Draft7Validator(_schema(), format_checker=FormatChecker()).validate(atlas)
-    assert atlas["manifest"]["dataset_id"].startswith("demo-")
-    assert atlas["manifest"]["flags"]["demo_badge"] is True
+    assert atlas["manifest"]["dataset_id"] == "pisa-2022-math"
+    assert atlas["manifest"]["flags"]["demo_badge"] is False
     assert atlas["manifest"]["flags"]["allow_quality_d"] is False
     assert atlas["manifest"]["flags"]["show_continuous_scale"] is False
+    assert atlas["manifest"]["threshold_iq"] == 700
+    assert atlas["manifest"]["default_sigma"] == 100
     assert "src" not in COMMITTED.parts or COMMITTED.parts[COMMITTED.parts.index("src") - 1] == "web"
     assert COMMITTED.as_posix().endswith("web/public/data/atlas.json")
     by_iso = {row["iso3"]: row for row in atlas["countries"]}
-    for iso3 in COVERAGE_ISO3:
+    for iso3 in ("USA", "BRA", "IDN", "JPN", "DEU"):
         assert by_iso[iso3]["status"] == "ok"
         assert by_iso[iso3]["has_geometry"] is True
+    for iso3 in ("CHN", "IND", "NGA", "PAK"):
+        assert by_iso[iso3]["status"] == "no_estimate"
     assert by_iso["USA"]["has_geometry"] is True
     assert "ATA" not in by_iso
     assert atlas["unmatched_estimates"] == []

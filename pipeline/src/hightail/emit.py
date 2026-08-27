@@ -22,7 +22,7 @@ from hightail.ingest import EstimateRecord, IngestResult, ingest_estimates
 from hightail.join import JoinError, JoinResult, join_frame, unmatched_as_dicts
 from hightail.normalize import load_iso3_overrides, load_territory_policy
 from hightail.quality import QUALITIES
-from hightail.tails import DEFAULT_SIGMA, THRESHOLD_IQ
+from hightail.scale import IQ_SCALE, ScaleConfig, get_scale
 from hightail.wpp import DEFAULT_REFERENCE_YEAR, load_wpp_extract
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -81,14 +81,20 @@ def caveats_hash(text: str = CAVEAT_TEXT) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _dataset_id(records: tuple[EstimateRecord, ...]) -> str:
+def _dataset_id(
+    records: tuple[EstimateRecord, ...], scale: ScaleConfig = IQ_SCALE
+) -> str:
+    if scale.name == "pisa":
+        return scale.dataset_id
     sources = {row.source for row in records if row.source}
     if not records or sources == {DEMO_SOURCE_NAME}:
         return DEMO_DATASET_ID
     return "user-csv"
 
 
-def _estimates_source(records: tuple[EstimateRecord, ...]) -> dict[str, str | None]:
+def _estimates_source(
+    records: tuple[EstimateRecord, ...], scale: ScaleConfig = IQ_SCALE
+) -> dict[str, str | None]:
     sources = [row.source for row in records if row.source]
     if sources and all(name == sources[0] for name in sources):
         name = sources[0]
@@ -96,7 +102,18 @@ def _estimates_source(records: tuple[EstimateRecord, ...]) -> dict[str, str | No
         name = "user-csv"
     else:
         name = DEMO_SOURCE_NAME
-    return {"name": name, "citation": None, "url": None, "license": None}
+    citation = None
+    url = None
+    if scale.name == "pisa":
+        citation = (
+            "OECD (2023). PISA 2022 Results (Volume I): The State of Learning "
+            "and Equity in Education. Table I.B1.2.1 mathematics mean scores."
+        )
+        url = "https://doi.org/10.1787/53f23881-en"
+        urls = {row.source_url for row in records if row.source_url}
+        if len(urls) == 1:
+            url = next(iter(urls))
+    return {"name": name, "citation": citation, "url": url, "license": None}
 
 
 def _n_quality(countries: tuple[dict[str, Any], ...]) -> dict[str, int]:
@@ -144,22 +161,29 @@ def build_manifest(
     *,
     created_at: str | None = None,
     geometry_source: str | None = None,
+    scale: ScaleConfig = IQ_SCALE,
 ) -> dict[str, Any]:
-    dataset_id = _dataset_id(records)
+    dataset_id = _dataset_id(records, scale)
+    threshold = int(scale.threshold) if scale.threshold == int(scale.threshold) else scale.threshold
+    default_sigma = (
+        int(scale.default_sigma)
+        if scale.default_sigma == int(scale.default_sigma)
+        else scale.default_sigma
+    )
     return {
         "schema_version": 1,
         "dataset_id": dataset_id,
         "created_at": created_at or rfc3339_utc(),
         "pipeline_version": pipeline_version(),
-        "threshold_iq": THRESHOLD_IQ,
-        "default_sigma": int(DEFAULT_SIGMA) if DEFAULT_SIGMA == int(DEFAULT_SIGMA) else DEFAULT_SIGMA,
-        "formula": FORMULA,
+        "threshold_iq": threshold,
+        "default_sigma": default_sigma,
+        "formula": scale.formula,
         "phi_implementation": PHI_IMPLEMENTATION,
-        "metric_label": METRIC_LABEL,
+        "metric_label": scale.metric_label,
         "population_source": POPULATION_SOURCE,
         "geometry_source": geometry_source if geometry_source is not None else GEOMETRY_SOURCE_NONE,
-        "estimates_source": _estimates_source(records),
-        "caveats_hash": caveats_hash(),
+        "estimates_source": _estimates_source(records, scale),
+        "caveats_hash": caveats_hash(scale.caveat_text),
         "n_ok": join.n_ok,
         "n_no_estimate": join.n_no_estimate,
         "n_no_iso": join.n_no_iso,
@@ -171,7 +195,7 @@ def build_manifest(
             "allow_quality_d": False,
             "demo_badge": dataset_id.startswith("demo-"),
         },
-        "assumptions": list(ASSUMPTIONS),
+        "assumptions": list(scale.assumptions),
     }
 
 
@@ -181,10 +205,15 @@ def assemble_atlas(
     *,
     created_at: str | None = None,
     geometry_source: str | None = None,
+    scale: ScaleConfig = IQ_SCALE,
 ) -> dict[str, Any]:
     atlas = {
         "manifest": build_manifest(
-            join, records, created_at=created_at, geometry_source=geometry_source
+            join,
+            records,
+            created_at=created_at,
+            geometry_source=geometry_source,
+            scale=scale,
         ),
         "countries": list(join.countries),
         "unmatched_estimates": unmatched_as_dicts(join.unmatched),
@@ -238,7 +267,9 @@ def build_atlas(
     on_duplicate: str = "error",
     created_at: str | None = None,
     geometry_path: Path | str | None = None,
+    scale: ScaleConfig | str | None = None,
 ) -> dict[str, Any]:
+    loaded_scale = get_scale(scale)
     overrides = load_iso3_overrides(overrides_path)
     policy = load_territory_policy(policy_path)
     ingest: IngestResult = ingest_estimates(
@@ -248,6 +279,7 @@ def build_atlas(
         allow_extreme_mu=allow_extreme_mu,
         on_duplicate=on_duplicate,  # type: ignore[arg-type]
         schema_path=estimates_schema,
+        scale=loaded_scale,
     )
     wpp = load_wpp_extract(population_path, reference_year=reference_year)
     geom_path = DEFAULT_GEOMETRY_PATH if geometry_path is None else Path(geometry_path)
@@ -263,6 +295,7 @@ def build_atlas(
             policy,
             allow_unmatched=allow_unmatched,
             geometry=geometry,
+            scale=loaded_scale,
         )
         assert_has_geometry_in_topo(joined.countries, geometry)
     except (JoinError, GeometryError) as exc:
@@ -272,6 +305,7 @@ def build_atlas(
         ingest.records,
         created_at=created_at,
         geometry_source=geometry.source,
+        scale=loaded_scale,
     )
     write_atlas(atlas, out_path, schema_path=atlas_schema)
     return atlas

@@ -10,10 +10,10 @@ export function CaveatBanner() {
         <p>
           These figures are <strong>modeled estimates</strong>, not measurements.
           Each percentage is the right tail of a normal distribution given a
-          published or assumed country mean and SD (default 15), applied to UN
-          population counts. National IQ compilations are incomplete and
-          contested. This is <strong>not</strong> a ranking of people, nations, or
-          worth.{" "}
+          published PISA 2022 mathematics country mean and SD (default 100), for
+          15-year-olds in school. This is scholastic achievement,{" "}
+          <strong>not IQ</strong>. This is <strong>not</strong> a ranking of
+          people, nations, or worth.{" "}
           <Link href="/methodology/" className="font-medium underline">
             Read the methodology.
           </Link>

@@ -28,6 +28,7 @@ from hightail.normalize import (
     resolve_row,
 )
 from hightail.quality import QUALITIES, SAMPLE_TYPES, assign_quality
+from hightail.scale import IQ_SCALE, ScaleConfig, get_scale
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 _DEFAULT_SCHEMA = _REPO_ROOT / "data" / "schemas" / "estimates.schema.json"
@@ -189,11 +190,11 @@ def _parse_int(value: str, field: str, line_no: int) -> int:
     return int(round(number))
 
 
-def _sigma_flag(sigma: float | None) -> str | None:
+def _sigma_flag(sigma: float | None, scale: ScaleConfig = IQ_SCALE) -> str | None:
     if sigma is None:
         return None
-    if sigma < SIGMA_FLAG_LO or sigma > SIGMA_FLAG_HI:
-        return "outside_12_20"
+    if sigma < scale.sigma_flag_lo or sigma > scale.sigma_flag_hi:
+        return scale.sigma_flag_label
     return None
 
 
@@ -238,20 +239,21 @@ def _validate_typed(
     line_no: int,
     *,
     allow_extreme_mu: bool,
+    scale: ScaleConfig = IQ_SCALE,
 ) -> bool:
-    """Return True when mu is outside (50, 130) and the extreme-mu flag is set."""
+    """Return True when mu is outside the scale range and the extreme-mu flag is set."""
     mu = typed["mu"]
-    extreme = not (MU_MIN < mu < MU_MAX)
+    extreme = not (scale.mu_min < mu < scale.mu_max)
     if extreme and not allow_extreme_mu:
         raise IngestError(
-            f"row {line_no}: mu must be in ({MU_MIN:g}, {MU_MAX:g}), got {mu}; "
+            f"row {line_no}: mu must be in ({scale.mu_min:g}, {scale.mu_max:g}), got {mu}; "
             "pass --allow-extreme-mu to keep the row as quality E"
         )
 
     sigma = typed.get("sigma")
-    if sigma is not None and not (SIGMA_MIN < sigma < SIGMA_MAX):
+    if sigma is not None and not (scale.sigma_min < sigma < scale.sigma_max):
         raise IngestError(
-            f"row {line_no}: sigma must be in ({SIGMA_MIN:g}, {SIGMA_MAX:g}), got {sigma}"
+            f"row {line_no}: sigma must be in ({scale.sigma_min:g}, {scale.sigma_max:g}), got {sigma}"
         )
 
     mu_se = typed.get("mu_se")
@@ -351,8 +353,10 @@ def ingest_estimates(
     allow_extreme_mu: bool = False,
     on_duplicate: OnDuplicate = "error",
     schema_path: Path | str | None = None,
+    scale: ScaleConfig | str | None = None,
 ) -> IngestResult:
     """Read a UTF-8 estimates CSV, validate, and normalize ISO-3 keys."""
+    loaded_scale = get_scale(scale)
     csv_path = Path(path)
     if not csv_path.is_file():
         raise IngestError(f"estimates file not found: {csv_path}")
@@ -374,7 +378,9 @@ def ingest_estimates(
         extra = {
             key: value for key, value in omitted.items() if key not in KNOWN_FIELDS
         }
-        extreme = _validate_typed(typed, line_no, allow_extreme_mu=allow_extreme_mu)
+        extreme = _validate_typed(
+            typed, line_no, allow_extreme_mu=allow_extreme_mu, scale=loaded_scale
+        )
 
         instance = _schema_instance(typed, extreme_mu=extreme)
         try:
@@ -426,7 +432,7 @@ def ingest_estimates(
                 sample_type=typed.get("sample_type"),
                 quality=quality,
                 notes=typed.get("notes"),
-                sigma_flag=_sigma_flag(typed.get("sigma")),
+                sigma_flag=_sigma_flag(typed.get("sigma"), loaded_scale),
                 source_extra=extra,
                 extreme_mu=extreme,
             )

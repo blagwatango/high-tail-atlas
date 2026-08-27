@@ -7,9 +7,9 @@ import { SkipLinks } from "@/components/SkipLinks";
 import "./globals.css";
 
 const TITLE =
-  "High-Tail Atlas — modeled estimates of the population share at IQ ≥ 130";
+  "High-Tail Atlas — modeled share of 15-year-olds at PISA mathematics ≥ 700";
 const DESCRIPTION =
-  "Modeled estimates of the share of each country’s population at IQ ≥ 130. These are modeled estimates, not measurements or a ranking of nations.";
+  "Modeled estimates of the share of 15-year-olds at PISA mathematics ≥ 700. OECD PISA 2022 school scores, not IQ, not a ranking of nations.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(

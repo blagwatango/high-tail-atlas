@@ -1,5 +1,5 @@
 /**
- * Emit web/public/data/atlas.json from the demo fixture.
+ * Emit web/public/data/atlas.json from the PISA 2022 mathematics fixture.
  * Requires Python 3.11+ with the pipeline package (pip install -e ../pipeline).
  */
 import { spawnSync } from "node:child_process";
@@ -31,7 +31,7 @@ const buildArgs = [
   "hightail.cli",
   "build",
   "--estimates",
-  join(repoRoot, "data", "fixtures", "demo_estimates.csv"),
+  join(repoRoot, "data", "fixtures", "pisa_2022_math.csv"),
   "--population",
   join(repoRoot, "data", "raw", "wpp_extract.csv"),
   "--overrides",
@@ -42,6 +42,8 @@ const buildArgs = [
   join(webRoot, "public", "data", "atlas.json"),
   "--reference-year",
   "2025",
+  "--scale",
+  "pisa",
 ];
 
 const env = {

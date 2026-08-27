@@ -1,0 +1,82 @@
+iso3,name,mu,sigma,mu_se,source,source_url,source_year,sample_n,sample_type,quality,notes
+SGP,Singapore,575,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MAC,Macao,552,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+TWN,Taiwan,547,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+HKG,Hong Kong,540,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+JPN,Japan,536,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+KOR,South Korea,527,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+EST,Estonia,510,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+CHE,Switzerland,508,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+CAN,Canada,497,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+NLD,Netherlands,493,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+IRL,Ireland,492,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+BEL,Belgium,489,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+DNK,Denmark,489,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+GBR,United Kingdom,489,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+POL,Poland,489,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+AUS,Australia,487,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+AUT,Austria,487,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+CZE,Czechia,487,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+SVN,Slovenia,485,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+FIN,Finland,484,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+LVA,Latvia,483,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+SWE,Sweden,482,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+NZL,New Zealand,479,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+DEU,Germany,475,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+LTU,Lithuania,475,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+FRA,France,474,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ESP,Spain,473,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+HUN,Hungary,473,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+PRT,Portugal,472,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ITA,Italy,471,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+VNM,Viet Nam,469,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+NOR,Norway,468,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MLT,Malta,466,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+USA,United States,465,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+SVK,Slovakia,464,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+HRV,Croatia,463,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ISL,Iceland,459,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ISR,Israel,458,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+TUR,Türkiye,453,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+BRN,Brunei,442,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+UKR,Ukraine,441,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ. Coverage incomplete (war); not all regions.
+SRB,Serbia,440,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ARE,United Arab Emirates,431,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+GRC,Greece,430,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ROU,Romania,428,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+KAZ,Kazakhstan,425,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MNG,Mongolia,425,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+CYP,Cyprus,418,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+BGR,Bulgaria,417,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MDA,Moldova,417,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+QAT,Qatar,414,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+CHL,Chile,412,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+URY,Uruguay,409,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MYS,Malaysia,409,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MNE,Montenegro,406,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+AZE,Azerbaijan,397,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MEX,Mexico,395,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+THA,Thailand,394,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+PER,Peru,391,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+GEO,Georgia,390,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+MKD,North Macedonia,389,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+SAU,Saudi Arabia,389,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+CRI,Costa Rica,385,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+COL,Colombia,383,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+BRA,Brazil,379,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ARG,Argentina,378,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+JAM,Jamaica,377,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+ALB,Albania,368,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+IDN,Indonesia,366,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+PSE,Palestine,366,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ. Reported as Palestinian Authority in OECD tables.
+MAR,Morocco,365,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+UZB,Uzbekistan,364,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+JOR,Jordan,361,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+PAN,Panama,357,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+XKX,Kosovo,355,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+PHL,Philippines,355,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+GTM,Guatemala,344,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+SLV,El Salvador,343,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+DOM,Dominican Republic,339,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+PRY,Paraguay,338,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.
+KHM,Cambodia,336,100,,OECD PISA 2022 mathematics,https://doi.org/10.1787/53f23881-en,2022,5000,students,B,OECD PISA 2022 mathematics country mean; 15-year-olds in school; not IQ.

@@ -113,7 +113,7 @@ function EstimateTooltip({ active, payload }: TooltipContentProps) {
     <div className="max-w-xs rounded border border-stone-300 bg-white p-2 text-xs text-stone-900 shadow">
       <p className="font-medium">{row.name}</p>
       <p>
-        Estimated share modeled at IQ ≥ 130:{" "}
+        Estimated share modeled at PISA mathematics ≥ 700:{" "}
         {formatPHat(row.p_hat, row.quality, "map")}
       </p>
       <p>This is a model output, not a count.</p>
@@ -124,7 +124,7 @@ function EstimateTooltip({ active, payload }: TooltipContentProps) {
       <p>Source: {row.source_short ?? "unknown"}</p>
       {caveat ? <p>{caveat}</p> : null}
       {nLabel ? (
-        <p>Est. people ≥ 130 (context): {nLabel}</p>
+        <p>Est. people, total pop × share (context): {nLabel}</p>
       ) : null}
     </div>
   );

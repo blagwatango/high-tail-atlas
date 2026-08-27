@@ -13,15 +13,27 @@ export function formatFormulaPercent(pHat: number): string {
   return `${(Math.round(q * 100) / 100).toFixed(2)}%`;
 }
 
-export function formulaDisplay(mu: number, sigma: number): string {
-  const pct = formatFormulaPercent(tailP(mu, sigma));
-  return `1 − Φ((${THRESHOLD_IQ} − ${formatFormulaParam(mu)}) / ${formatFormulaParam(sigma)}) = ${pct}`;
+export function formulaDisplay(
+  mu: number,
+  sigma: number,
+  threshold: number = THRESHOLD_IQ,
+): string {
+  const pct = formatFormulaPercent(tailP(mu, sigma, threshold));
+  return `1 − Φ((${threshold} − ${formatFormulaParam(mu)}) / ${formatFormulaParam(sigma)}) = ${pct}`;
 }
 
-export function FormulaBlock({ mu, sigma }: { mu: number; sigma: number }) {
+export function FormulaBlock({
+  mu,
+  sigma,
+  threshold = THRESHOLD_IQ,
+}: {
+  mu: number;
+  sigma: number;
+  threshold?: number;
+}) {
   return (
     <p data-testid="formula-block" className="font-mono text-sm break-words">
-      {formulaDisplay(mu, sigma)}
+      {formulaDisplay(mu, sigma, threshold)}
     </p>
   );
 }

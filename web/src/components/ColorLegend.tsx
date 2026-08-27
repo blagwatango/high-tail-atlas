@@ -81,8 +81,8 @@ export function ColorLegend() {
         </defs>
       </svg>
       <figcaption className="mb-2 max-w-xl leading-snug">
-        Modeled share of population at IQ ≥ 130 (normal tail). Bins are coarse on
-        purpose.
+        Modeled share of 15-year-olds at PISA mathematics ≥ 700 (normal tail).
+        Bins are coarse on purpose.
       </figcaption>
       <ul className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <li className="flex items-center gap-1.5">
@@ -102,7 +102,7 @@ export function ColorLegend() {
               <span>{bin.label}</span>
               {marksReference ? (
                 <span className="text-stone-500">
-                  μ=100, σ=15 → {REFERENCE_P_LABEL}.
+                  μ=500, σ=100 → {REFERENCE_P_LABEL}.
                 </span>
               ) : null}
             </li>

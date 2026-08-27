@@ -85,7 +85,7 @@
         "sigma": { "type": ["number", "null"] },
         "sigma_source": {
           "type": ["string", "null"],
-          "enum": ["source", "assumed_15", null]
+          "enum": ["source", "assumed_15", "assumed_100", null]
         },
         "sigma_flag": {
           "type": ["string", "null"],
@@ -214,12 +214,9 @@
         "dataset_id": { "type": "string" },
         "created_at": { "type": "string", "format": "date-time" },
         "pipeline_version": { "type": "string" },
-        "threshold_iq": { "type": "integer", "const": 130 },
-        "default_sigma": { "type": "number", "const": 15 },
-        "formula": {
-          "type": "string",
-          "const": "p = 1 - Phi((130 - mu) / sigma)"
-        },
+        "threshold_iq": { "type": "number" },
+        "default_sigma": { "type": "number" },
+        "formula": { "type": "string" },
         "phi_implementation": {
           "type": "string",
           "const": "scipy.stats.norm.sf"

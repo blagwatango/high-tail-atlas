@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Methodology — High-Tail Atlas",
   description:
-    "Modeled estimates of the population share at IQ ≥ 130: formula, assumptions, and a tail calculator.",
+    "Modeled estimates of the share of 15-year-olds at PISA mathematics ≥ 700: formula, assumptions, and a tail calculator.",
 };
 
 export default function MethodologyPage() {
@@ -28,10 +28,9 @@ export default function MethodologyPage() {
       <p className="mt-4 text-stone-800">
         These figures are <strong>modeled estimates</strong>, not measurements.
         Each percentage is the right tail of a normal distribution given a
-        published or assumed country mean and SD (default 15), applied to UN
-        population counts. National IQ compilations are incomplete and
-        contested. This is <strong>not</strong> a ranking of people, nations, or
-        worth.
+        published PISA 2022 mathematics country mean and SD (default 100), for
+        15-year-olds in school. This is scholastic achievement, not IQ. This is{" "}
+        <strong>not</strong> a ranking of people, nations, or worth.
       </p>
 
       <section className="mt-10" aria-labelledby="formula-heading">
@@ -39,8 +38,8 @@ export default function MethodologyPage() {
           1. Formula
         </h2>
         <p className="mt-3 text-stone-800">
-          Let T = 130 (a product constant, not a dashboard control). For a
-          country with estimated mean μ and SD σ,
+          Let T = 700 (PISA scale +2 SD; not a dashboard control). For a
+          country with published PISA mathematics mean μ and SD σ,
         </p>
         <p className="mt-3 font-mono text-sm text-stone-900">{FORMULA}</p>
         <p className="mt-1 font-mono text-sm text-stone-700">
@@ -49,9 +48,9 @@ export default function MethodologyPage() {
         <p className="mt-3 text-stone-800">
           equivalently{" "}
           <span className="font-mono text-sm">
-            p̂ = scipy.stats.norm.sf((130 − μ) / σ)
+            p̂ = scipy.stats.norm.sf((700 − μ) / σ)
           </span>
-          . Under μ = 100 and σ = 15 this is 1 − Φ(2), labeled{" "}
+          . Under μ = 500 and σ = 100 this is 1 − Φ(2), labeled{" "}
           {REFERENCE_P_LABEL} in legends and on this page (quality-A cells round
           that value to 2.3%). Python publishes <code className="font-mono text-sm">p_hat</code> in{" "}
           <code className="font-mono text-sm">atlas.json</code>; the calculator
@@ -78,24 +77,17 @@ export default function MethodologyPage() {
 
       <section className="mt-10" aria-labelledby="sigma-heading">
         <h2 id="sigma-heading" className="text-lg font-semibold">
-          3. Why σ = 15 is assumed
+          3. Why σ = 100 is assumed
         </h2>
         <p className="mt-3 text-stone-800">
-          Conventional IQ scoring is defined so that a reference population has
-          mean 100 and SD 15. Published country compilations almost never
-          estimate a country-specific σ; they report (at best) a location
-          parameter. When the source omits σ, the pipeline sets σ = 15 and
-          flags <code className="font-mono text-sm">sigma_source =
-          &quot;assumed_15&quot;</code>.
+          The OECD PISA scale was defined so that a reference population has
+          mean 500 and SD 100. Country reports usually publish a mean, not a
+          country-specific σ. When the source omits σ, the pipeline sets σ =
+          100.
         </p>
         <p className="mt-3 text-stone-800">
-          If a source does publish σ, it is passed through when σ ∈ (5, 30).
-          Values inside (5, 30) but outside [12, 20] are allowed and set{" "}
-          <code className="font-mono text-sm">sigma_flag =
-          &quot;outside_12_20&quot;</code>. Values at or outside (5, 30) fail
-          ingest. Between-country variance of SDs is otherwise ignored: if the
-          true σ &gt; 15, p̂ is understated for μ &lt; 130; if the true σ &lt;
-          15, overstated.
+          If a source does publish σ, it is passed through when σ ∈ (40, 150).
+          Between-country variance of SDs is otherwise ignored.
         </p>
       </section>
 
@@ -127,24 +119,23 @@ export default function MethodologyPage() {
         <p className="mt-3 text-stone-800">
           The modeled share p̂ is multiplied by UN WPP mid-year{" "}
           <em>total</em> population, including infants. That is a modeling
-          convenience, not a claim that toddlers have IQ scores. Age-standardizing
-          onto ages 16+ would still be a model, and it needs an extra WPP
-          age-structure join. v1 does not age-standardize. Estimated headcounts
-          are order-of-magnitude context, not a census of people “above 130.”
+          convenience, not a claim that infants sat PISA. PISA samples
+          15-year-olds in school. Estimated headcounts are order-of-magnitude
+          context only, not a census of high-scoring 15-year-olds.
         </p>
       </section>
 
       <section className="mt-10" aria-labelledby="delta-heading">
         <h2 id="delta-heading" className="text-lg font-semibold">
-          6. Why δ = 3 is sensitivity, not a confidence interval
+          6. Why δ = 20 is sensitivity, not a confidence interval
         </h2>
         <p className="mt-3 text-stone-800">{SENSITIVITY_COPY}</p>
         <p className="mt-3 text-stone-800">
           When the source does not report SE(μ), the pipeline stores an
-          illustrative band by shifting μ by δ = 3 IQ points (~0.2σ if σ = 15)
-          and recomputing the tail. That band is not a standard error, not one
-          source SD, and not a statistical confidence interval. If the source
-          does report <code className="font-mono text-sm">mu_se</code>, a
+          illustrative band by shifting μ by δ = 20 PISA points (~0.2σ if σ =
+          100) and recomputing the tail. That band is not a standard error, not
+          one source SD, and not a statistical confidence interval. If the
+          source does report <code className="font-mono text-sm">mu_se</code>, a
           separate interval from ±1.96 SE is stored and labeled as still
           conditional on normality and σ. The two bands are never drawn
           unlabeled beside each other, and neither is mapped as a choropleth
@@ -166,8 +157,9 @@ export default function MethodologyPage() {
           fake ISO-3, and countries without an estimate stay{" "}
           <code className="font-mono text-sm">status = &quot;no_estimate&quot;</code>{" "}
           with null μ and p̂. We do not vendor Lynn/Vanhanen/Becker
-          national-IQ tables. v1 ships a labeled DEMO fixture (quality C;
-          fabricated μ ∈ {"{90, 100, 110}"}).
+          national-IQ tables. The default dataset is OECD PISA 2022
+          mathematics country means. Countries that did not sit PISA 2022 stay
+          blank.
         </p>
       </section>
 

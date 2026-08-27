@@ -7,12 +7,13 @@ import {
   FORMULA_DISPLAY,
   formatSandboxShare,
 } from "@/lib/methodology";
-import { DEFAULT_SIGMA, THRESHOLD_IQ, tailP } from "@/lib/tails";
+import { PISA_DEFAULT_MU, PISA_DEFAULT_SIGMA, PISA_THRESHOLD } from "@/lib/copy";
+import { tailP } from "@/lib/tails";
 
-const MU_MIN = 70;
-const MU_MAX = 120;
-const SIGMA_MIN = 6;
-const SIGMA_MAX = 29;
+const MU_MIN = 300;
+const MU_MAX = 620;
+const SIGMA_MIN = 60;
+const SIGMA_MAX = 140;
 
 function clamp(n: number, min: number, max: number): number {
   if (!Number.isFinite(n)) return min;
@@ -20,16 +21,16 @@ function clamp(n: number, min: number, max: number): number {
 }
 
 export function TailCalculator() {
-  const [mu, setMu] = useState(100);
-  const [sigma, setSigma] = useState(DEFAULT_SIGMA);
+  const [mu, setMu] = useState(PISA_DEFAULT_MU);
+  const [sigma, setSigma] = useState(PISA_DEFAULT_SIGMA);
 
-  const { z, share, outside1220 } = useMemo(() => {
-    const zValue = (THRESHOLD_IQ - mu) / sigma;
-    const p = tailP(mu, sigma);
+  const { z, share, outsideFlag } = useMemo(() => {
+    const zValue = (PISA_THRESHOLD - mu) / sigma;
+    const p = tailP(mu, sigma, PISA_THRESHOLD);
     return {
       z: zValue,
       share: formatSandboxShare(p, mu, sigma),
-      outside1220: sigma < 12 || sigma > 20,
+      outsideFlag: sigma < 70 || sigma > 130,
     };
   }, [mu, sigma]);
 
@@ -42,17 +43,17 @@ export function TailCalculator() {
         Interactive tail calculator
       </h3>
       <p className="mt-2 text-sm text-stone-700">
-        Modeled estimate of the population share at IQ ≥ {THRESHOLD_IQ} under a
-        normal with mean μ and SD σ. Uses TypeScript{" "}
+        Modeled estimate of the share of 15-year-olds at PISA mathematics ≥{" "}
+        {PISA_THRESHOLD} under a normal with mean μ and SD σ. Uses TypeScript{" "}
         <code className="font-mono text-xs">tailP</code> (Cephes{" "}
         <code className="font-mono text-xs">erfc</code>), not a transcribed
-        constant. Default μ = 100, σ = 15 → {REFERENCE_P_LABEL}.
+        constant. Default μ = 500, σ = 100 → {REFERENCE_P_LABEL}.
       </p>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div className="text-sm">
           <label htmlFor="mu-input" className="font-medium">
-            Mean μ (IQ points)
+            Mean μ (PISA points)
           </label>
           <input
             className="mt-1 w-full accent-stone-800"
@@ -112,21 +113,16 @@ export function TailCalculator() {
         <div>{FORMULA}</div>
         <div className="mt-1 text-stone-600">{FORMULA_DISPLAY}</div>
         <div className="mt-2">
-          1 − Φ(({THRESHOLD_IQ} − {mu}) / {sigma}) = 1 − Φ({z.toFixed(3)}) ≈{" "}
+          1 − Φ(({PISA_THRESHOLD} − {mu}) / {sigma}) = 1 − Φ({z.toFixed(3)}) ≈{" "}
           {share}
         </div>
         <div className="mt-2">
           Modeled estimate: <strong>{share}</strong>
         </div>
       </div>
-      {outside1220 ? (
+      {outsideFlag ? (
         <p className="mt-2 text-sm text-stone-700">
-          σ is inside the ingest window (5, 30) but outside [12, 20], so the
-          pipeline would set{" "}
-          <code className="font-mono text-xs">
-            sigma_flag = &quot;outside_12_20&quot;
-          </code>
-          .
+          σ is inside the ingest window (40, 150) but outside [70, 130].
         </p>
       ) : null}
     </section>

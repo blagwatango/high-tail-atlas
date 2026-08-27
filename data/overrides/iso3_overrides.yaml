@@ -16,6 +16,14 @@ aliases:
   # ISO 3166-1: Türkiye; former English name Turkey — TUR
   "Turkey": TUR
   "Türkiye": TUR
+  "Macao": MAC
+  "Macau": MAC
+  "Hong Kong": HKG
+  "Taiwan": TWN
+  "Palestinian Authority": PSE
+  "Palestine": PSE
+  "Vietnam": VNM
+  "Viet Nam": VNM
   # ISO 3166-1: Côte d'Ivoire — CIV
   "Ivory Coast": CIV
   "Cote d'Ivoire": CIV

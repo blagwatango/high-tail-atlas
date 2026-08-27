@@ -1,8 +1,6 @@
 # High-Tail Atlas
 
-Modeled estimates of the share of each country’s population at IQ ≥ 130. This is **not** a ranking of people, nations, or worth. Country means are estimates; the dashboard will compute a normal right-tail probability, not a census of high-IQ people.
-
-v1 will ship a labeled **DEMO** dataset. Do not treat demo figures as measurements.
+Modeled estimates of the share of 15-year-olds at PISA mathematics ≥ 700 (OECD PISA 2022). This is **not** IQ and **not** a ranking of people, nations, or worth. Country means are published PISA scores; the dashboard computes a normal right-tail probability. Countries that did not sit PISA 2022 stay blank.
 
 ## Requirements
 

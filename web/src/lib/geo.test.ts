@@ -65,7 +65,7 @@ describe("mapTooltipText", () => {
   it("uses the required modeled-estimate copy", () => {
     const text = mapTooltipText(row({ iso3: "USA", name: "United States" }));
     expect(text).toContain("United States");
-    expect(text).toContain("Estimated share modeled at IQ ≥ 130: ~2%");
+    expect(text).toContain("Estimated share modeled at PISA mathematics ≥ 700: ~2%");
     expect(text).toContain("This is a model output, not a count.");
     expect(text).toContain("Quality: C · Source year: 2026");
     expect(text).toContain("Source: DEMO");
@@ -76,7 +76,9 @@ describe("mapTooltipText", () => {
     const text = mapTooltipText(
       row({ iso3: "AFG", name: "Afghanistan", status: "no_estimate" }),
     );
-    expect(text).toContain("Estimated share modeled at IQ ≥ 130: No estimate");
+    expect(text).toContain(
+      "Estimated share modeled at PISA mathematics ≥ 700: No estimate",
+    );
     expect(text).toContain("Quality: no estimate");
     expect(text).toContain("Not independently estimated");
   });

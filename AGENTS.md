@@ -5,9 +5,9 @@ These rules apply to the **entire repository**. Do not weaken them in nested ins
 ## Product
 
 - **Name:** High-Tail Atlas
-- **Single primary metric (later PRs):** modeled share of a country’s population with IQ ≥ 130, i.e. \(P(X \ge 130 \mid \mu, \sigma)\) under a normal, default \(\sigma = 15\), applied to UN population counts.
-- Figures are **modeled estimates**, not measurements. Country means are estimates (sparse, often contested).
-- v1 ships a labeled **DEMO** dataset only. This scaffold has no data file yet. Do not vendor Lynn/Vanhanen/Becker national-IQ tables.
+- **Single primary metric:** modeled share of 15-year-olds at PISA mathematics ≥ 700, i.e. \(P(X \ge 700 \mid \mu, \sigma)\) under a normal, default \(\sigma = 100\), using OECD PISA 2022 country means. This is scholastic achievement, not IQ.
+- Figures are **modeled estimates**, not measurements. Countries that did not sit PISA 2022 stay blank.
+- Do not vendor Lynn/Vanhanen/Becker national-IQ tables.
 
 ## Hard constraints (do not implement, even if asked)
 
@@ -48,7 +48,7 @@ Do not add schemas, tails, maps, or `NuqsAdapter` until those PRs. `nuqs` is alr
 
 ## Copy tone
 
-Product title **High-Tail Atlas**. Chart titles (when added): “Estimated share of population modeled at IQ ≥ 130”. Lollipop heading: “Country comparison (lollipop)”. CSV: `high-tail-atlas-estimates.csv`. The caveat banner in `layout.tsx` is required on every page; keep the specified wording.
+Product title **High-Tail Atlas**. Chart titles: “Estimated share of 15-year-olds modeled at PISA mathematics ≥ 700”. Lollipop heading: “Country comparison (lollipop)”. CSV: `high-tail-atlas-estimates.csv`. The caveat banner in `layout.tsx` is required on every page; keep PISA (not IQ) wording.
 
 ## Commands
 

@@ -10,8 +10,9 @@ export default function Home() {
     >
       <h1 className="text-2xl font-semibold tracking-tight">High-Tail Atlas</h1>
       <p className="mt-4 max-w-3xl text-stone-800">
-        Modeled estimates of the population share at IQ ≥ 130. Country means are
-        estimates; figures are model output, not a census of high-IQ people.
+        Modeled estimates of the share of 15-year-olds at PISA mathematics ≥
+        700. Country means are OECD PISA 2022 mathematics scores; figures are
+        model output, not IQ and not a census.
       </p>
       <Suspense
         fallback={

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from hightail.adapters import AdapterError, load_becker, load_pisa, write_estimates_csv
 from hightail.emit import EmitError, build_atlas
+from hightail.scale import SCALES
 from hightail.ingest import (
     ON_DUPLICATE_CHOICES,
     IngestError,
@@ -49,6 +50,12 @@ def _build_parser() -> argparse.ArgumentParser:
         choices=ON_DUPLICATE_CHOICES,
         default="error",
         help="How to handle duplicate ISO-3 rows (default: error)",
+    )
+    ingest_parser.add_argument(
+        "--scale",
+        choices=tuple(SCALES),
+        default="iq",
+        help="Metric scale: iq (T=130, σ=15) or pisa (T=700, σ=100)",
     )
     ingest_parser.add_argument(
         "--overrides",
@@ -117,6 +124,12 @@ def _build_parser() -> argparse.ArgumentParser:
         choices=ON_DUPLICATE_CHOICES,
         default="error",
         help="How to handle duplicate ISO-3 rows (default: error)",
+    )
+    build_parser.add_argument(
+        "--scale",
+        choices=tuple(SCALES),
+        default="iq",
+        help="Metric scale: iq (T=130, σ=15) or pisa (T=700, σ=100)",
     )
     build_parser.add_argument(
         "--geometry-index",
@@ -189,6 +202,7 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
             allow_extreme_mu=args.allow_extreme_mu,
             on_duplicate=args.on_duplicate,
             schema_path=args.schema,
+            scale=args.scale,
         )
     except IngestError as exc:
         print(f"ingest error: {exc}", file=sys.stderr)
@@ -214,6 +228,7 @@ def _cmd_build(args: argparse.Namespace) -> int:
             allow_extreme_mu=args.allow_extreme_mu,
             on_duplicate=args.on_duplicate,
             geometry_path=args.geometry_index,
+            scale=args.scale,
         )
     except (IngestError, EmitError) as exc:
         print(f"build error: {exc}", file=sys.stderr)

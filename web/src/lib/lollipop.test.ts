@@ -62,7 +62,7 @@ describe("lollipop copy", () => {
       "40 countries in current sort (default: largest populations).",
     );
     expect(LOLLIPOP_AXIS_TITLE).toBe(
-      "Estimated % of population modeled at IQ ≥ 130",
+      "Estimated % of 15-year-olds modeled at PISA mathematics ≥ 700",
     );
     expect(LOLLIPOP_CAP_LABEL.toLowerCase()).not.toContain("top 40");
     expect(LOLLIPOP_TITLE.toLowerCase()).not.toContain("ranked");

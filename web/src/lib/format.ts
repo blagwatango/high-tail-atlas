@@ -79,9 +79,12 @@ function formatSigmaNumber(sigma: number): string {
 /** “15 (assumed)” vs “12.4 (source)”. */
 export function formatSigma(
   sigma: number | null,
-  sigmaSource: "source" | "assumed_15" | null,
+  sigmaSource: "source" | "assumed_15" | "assumed_100" | null,
 ): string {
   if (sigma == null || sigmaSource == null) return "—";
   const n = formatSigmaNumber(sigma);
-  return sigmaSource === "assumed_15" ? `${n} (assumed)` : `${n} (source)`;
+  if (sigmaSource === "assumed_15" || sigmaSource === "assumed_100") {
+    return `${n} (assumed)`;
+  }
+  return `${n} (source)`;
 }

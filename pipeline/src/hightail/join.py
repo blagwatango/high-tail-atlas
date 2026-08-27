@@ -13,7 +13,8 @@ from typing import Any, Mapping
 from hightail.geometry import GeometryFeature, GeometryIndex
 from hightail.ingest import EstimateRecord, IngestResult, UnmatchedRow
 from hightail.normalize import TerritoryPolicy, is_excluded_territory
-from hightail.tails import DEFAULT_SIGMA, compute_tails
+from hightail.scale import IQ_SCALE, ScaleConfig
+from hightail.tails import compute_tails
 from hightail.wpp import WppRow
 
 TINY_POPULATION_THRESHOLD = 250_000
@@ -64,11 +65,12 @@ def _shorten_source(source: str | None) -> str | None:
 
 def _sigma_fields(
     record: EstimateRecord | None,
+    scale: ScaleConfig = IQ_SCALE,
 ) -> tuple[float | None, str | None, str | None]:
     if record is None:
         return None, None, None
     if record.sigma is None:
-        return DEFAULT_SIGMA, "assumed_15", None
+        return scale.default_sigma, scale.assumed_sigma_source, None
     return record.sigma, "source", record.sigma_flag
 
 
@@ -96,9 +98,19 @@ def _empty_estimate_fields() -> dict[str, Any]:
     }
 
 
-def _ok_fields(record: EstimateRecord, population: int | None) -> dict[str, Any]:
-    sigma, sigma_source, sigma_flag = _sigma_fields(record)
-    tails = compute_tails(record.mu, sigma, record.mu_se)
+def _ok_fields(
+    record: EstimateRecord,
+    population: int | None,
+    scale: ScaleConfig = IQ_SCALE,
+) -> dict[str, Any]:
+    sigma, sigma_source, sigma_flag = _sigma_fields(record, scale)
+    tails = compute_tails(
+        record.mu,
+        sigma,
+        record.mu_se,
+        threshold=scale.threshold,
+        delta=scale.pm3_delta,
+    )
     estimated_n: int | None = None
     if tails["p_hat"] is not None and population is not None:
         estimated_n = int(round(tails["p_hat"] * population))
@@ -150,6 +162,7 @@ def _country_record(
     wpp: WppRow | None,
     policy: TerritoryPolicy,
     geom: GeometryFeature | None = None,
+    scale: ScaleConfig = IQ_SCALE,
 ) -> dict[str, Any]:
     excluded = is_excluded_territory(iso3, policy)
     if excluded:
@@ -158,7 +171,7 @@ def _country_record(
     elif record is not None:
         status = "ok"
         population = wpp.population if wpp is not None else None
-        fields = _ok_fields(record, population)
+        fields = _ok_fields(record, population, scale)
     elif geom is not None and geom.no_iso:
         status = "no_iso"
         fields = _empty_estimate_fields()
@@ -217,6 +230,7 @@ def join_frame(
     allow_unmatched: bool = False,
     geometry: GeometryIndex | None = None,
     fail_on_geometry_dropped: bool = True,
+    scale: ScaleConfig = IQ_SCALE,
 ) -> JoinResult:
     """Build the union frame. Never imputes μ from a different ISO-3."""
     if ingest.unmatched and not allow_unmatched:
@@ -242,6 +256,7 @@ def join_frame(
             wpp=wpp.get(iso3),
             policy=policy,
             geom=geom_features.get(iso3),
+            scale=scale,
         )
         for iso3 in sorted(keys)
     ]

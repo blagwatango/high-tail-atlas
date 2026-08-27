@@ -169,7 +169,7 @@ export function CountryTable({
       columnHelper.accessor("p_hat", {
         header: () => (
           <SortHeader
-            label="Estimated % ≥ 130"
+            label="Estimated % ≥ 700"
             sortKey="p_hat"
             current={sort}
             onChange={onSortChange}
@@ -187,7 +187,7 @@ export function CountryTable({
         },
       }),
       columnHelper.accessor("estimated_n_ge_130", {
-        header: "Est. people ≥ 130",
+        header: "Est. people (pop × share)",
         cell: (info) => (
           <span className="tabular-nums text-stone-700">
             {formatEstimatedN(info.getValue())}

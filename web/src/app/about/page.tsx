@@ -13,17 +13,16 @@ export default function AboutPage() {
     >
       <h1 className="text-2xl font-semibold tracking-tight">About</h1>
       <p className="mt-4 text-stone-800">
-        High-Tail Atlas will publish <strong>modeled estimates</strong> of the
-        share of each country’s population at IQ ≥ 130. That number is the right
-        tail of a normal distribution given a published or assumed country mean
-        and SD (default 15), applied to UN population counts. It is not a
-        measurement of anyone’s IQ.
+        High-Tail Atlas publishes <strong>modeled estimates</strong> of the
+        share of 15-year-olds at PISA mathematics ≥ 700. That number is the
+        right tail of a normal distribution given a published OECD PISA 2022
+        mathematics country mean and SD (default 100). It is school achievement
+        among sampled 15-year-olds, not IQ.
       </p>
       <p className="mt-4 text-stone-800">
-        Country means are <strong>estimates</strong>. Published compilations are
-        incomplete and contested: convenience samples, mixed tests, and missing
-        countries are common. Treat every cell as a model output with
-        uncertainty, not a fact about national worth.
+        Country means are the published PISA 2022 mathematics scores. Countries
+        that did not sit the test stay blank. Treat every cell as a model
+        output with uncertainty, not a fact about national worth.
       </p>
       <h2 className="mt-8 text-lg font-semibold">What we will not build</h2>
       <ul className="mt-3 list-disc space-y-2 pl-6 text-stone-800">
@@ -43,8 +42,7 @@ export default function AboutPage() {
         </li>
         <li>
           No vendored Lynn, Vanhanen, or Becker national-IQ tables in this
-          repository. v1 ships a labeled DEMO dataset (later); a user-supplied
-          CSV path may follow without rewriting the charts.
+          repository. The default dataset is OECD PISA 2022 mathematics.
         </li>
       </ul>
     </main>
