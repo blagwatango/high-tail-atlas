@@ -254,13 +254,13 @@ export function CountryTable({
         <button
           type="button"
           data-testid="download-csv"
-          className="rounded border border-stone-300 bg-white px-2 py-1 text-sm hover:bg-stone-100"
+          className="inline-flex min-h-11 items-center rounded border border-stone-300 bg-white px-3 text-sm hover:bg-stone-100"
           onClick={() => downloadCsv(buildEstimatesCsv(rows, datasetId))}
         >
           Download CSV
         </button>
       </div>
-      <div className="max-h-[36rem] overflow-auto">
+      <div className="-mx-3 max-h-[36rem] overflow-auto sm:mx-0">
         <table
           data-testid="filtered-ok-rows"
           data-count={rows.length}
@@ -277,7 +277,7 @@ export function CountryTable({
                     key={header.id}
                     scope="col"
                     aria-sort={ariaSort(header.column.id, sort)}
-                    className="whitespace-nowrap px-2 py-2 font-medium"
+                    className="whitespace-nowrap px-2 py-2.5 font-medium sm:py-2"
                     {...(header.column.id === "row_in_sort"
                       ? { "aria-label": "Row number in current sort" }
                       : {})}
@@ -310,7 +310,7 @@ export function CountryTable({
                   }`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="whitespace-nowrap px-2 py-1.5">
+                    <td key={cell.id} className="whitespace-nowrap px-2 py-2.5 sm:py-1.5">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

@@ -69,11 +69,12 @@ export function FilterBar({
           </p>
           <div className="flex max-h-32 flex-col gap-1 overflow-auto">
             {continents.map((c) => (
-              <label key={c} className="flex items-center gap-2">
+              <label key={c} className="flex min-h-11 items-center gap-2">
                 <input
                   type="checkbox"
                   name="continent"
                   value={c}
+                  className="size-4"
                   checked={continent.includes(c)}
                   onChange={() => onContinentChange(toggle(continent, c))}
                 />
@@ -89,11 +90,12 @@ export function FilterBar({
           </p>
           <div className="flex max-h-32 flex-col gap-1 overflow-auto">
             {regions.map((r) => (
-              <label key={r} className="flex items-center gap-2">
+              <label key={r} className="flex min-h-11 items-center gap-2">
                 <input
                   type="checkbox"
                   name="region"
                   value={r}
+                  className="size-4"
                   checked={region.includes(r)}
                   onChange={() => onRegionChange(toggle(region, r))}
                 />
@@ -112,7 +114,7 @@ export function FilterBar({
                 key={preset.value}
                 type="button"
                 aria-pressed={minPop === preset.value}
-                className={`rounded border px-2 py-1 ${
+                className={`min-h-11 rounded border px-3 ${
                   minPop === preset.value
                     ? "border-stone-900 bg-stone-900 text-white"
                     : "border-stone-300 bg-white hover:bg-stone-100"
@@ -127,7 +129,7 @@ export function FilterBar({
         <label className="flex flex-col gap-1">
           <span className="font-medium">Quality threshold</span>
           <select
-            className="rounded border border-stone-300 bg-white px-2 py-1"
+            className="min-h-11 min-w-[10rem] rounded border border-stone-300 bg-white px-2"
             value={quality}
             onChange={(e) =>
               onQualityChange(e.target.value as QualityThreshold)
@@ -144,7 +146,7 @@ export function FilterBar({
         <label className="flex flex-col gap-1">
           <span className="font-medium">Sort</span>
           <select
-            className="rounded border border-stone-300 bg-white px-2 py-1"
+            className="min-h-11 min-w-[10rem] rounded border border-stone-300 bg-white px-2"
             value={sort}
             onChange={(e) => onSortChange(e.target.value as SortKey)}
           >

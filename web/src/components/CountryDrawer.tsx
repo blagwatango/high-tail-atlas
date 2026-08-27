@@ -13,6 +13,7 @@ import { FormulaBlock, formatFormulaPercent } from "./FormulaBlock";
 export const WHAT_THIS_IS_NOT = [
   "This is not a census of people at PISA mathematics ≥ 700.",
   "It is a modeled estimate, not a ranking of people, nations, or worth.",
+  "It is not a map of who can use AI.",
 ] as const;
 
 export type DrawerBand =
@@ -96,7 +97,14 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
       if (event.key === "Escape") onClose();
     }
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    if (window.matchMedia("(max-width: 639px)").matches) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [country, onClose]);
 
   if (country == null) return null;
@@ -107,12 +115,20 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
   const sigma = country.sigma;
 
   return (
-    <aside
-      data-testid="country-drawer"
-      data-iso3={country.iso3}
-      aria-label="Country detail"
-      className="fixed inset-y-0 right-0 z-30 flex w-full max-w-md flex-col overflow-y-auto border-l border-stone-200 bg-white p-4 text-sm shadow-lg"
-    >
+    <>
+      <button
+        type="button"
+        aria-label="Close country detail"
+        className="fixed inset-0 z-30 bg-stone-900/40 sm:hidden"
+        onClick={onClose}
+      />
+      <aside
+        data-testid="country-drawer"
+        data-iso3={country.iso3}
+        aria-label="Country detail"
+        className="fixed inset-x-0 bottom-0 z-40 flex max-h-[85vh] w-full flex-col overflow-y-auto rounded-t-xl border-t border-stone-200 bg-white p-4 text-sm shadow-lg sm:inset-y-0 sm:right-0 sm:left-auto sm:max-h-none sm:max-w-md sm:rounded-none sm:border-t-0 sm:border-l pb-[max(1rem,env(safe-area-inset-bottom))]"
+      >
+      <div className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-stone-300 sm:hidden" />
       <div className="flex items-start justify-between gap-3">
         <h3 id="country-drawer-title" className="font-medium text-base">
           {country.name}{" "}
@@ -122,7 +138,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
         </h3>
         <button
           type="button"
-          className="rounded border border-stone-300 bg-white px-2 py-0.5 text-xs hover:bg-stone-100"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded border border-stone-300 bg-white px-3 text-sm hover:bg-stone-100"
           onClick={onClose}
         >
           Close
@@ -235,9 +251,10 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
           What this is not
         </h4>
         <p data-testid="drawer-what-this-is-not" className="mt-1 text-stone-700">
-          {WHAT_THIS_IS_NOT[0]} {WHAT_THIS_IS_NOT[1]}
+          {WHAT_THIS_IS_NOT.join(" ")}
         </p>
       </section>
     </aside>
+    </>
   );
 }

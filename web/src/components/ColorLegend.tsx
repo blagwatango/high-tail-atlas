@@ -6,6 +6,7 @@ import {
   REFERENCE_P,
   REFERENCE_P_LABEL,
 } from "@/lib/colors";
+import { MAP_CAPTION } from "@/lib/copy";
 
 const SWATCH = 14;
 
@@ -81,8 +82,7 @@ export function ColorLegend() {
         </defs>
       </svg>
       <figcaption className="mb-2 max-w-xl leading-snug">
-        Modeled share of 15-year-olds at PISA mathematics ≥ 700 (normal tail).
-        Bins are coarse on purpose.
+        {MAP_CAPTION} +2 SD is a thin slice; hatched gray is no estimate.
       </figcaption>
       <ul className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <li className="flex items-center gap-1.5">

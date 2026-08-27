@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type Ref } from "react";
 import { EqualEarth, Graticule } from "@visx/geo";
 import { Zoom } from "@visx/zoom";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
@@ -12,6 +12,7 @@ import {
   choroplethFillKind,
   choroplethHatch,
 } from "@/lib/colors";
+import { MAP_HINT_COMPACT, MAP_HINT_DESKTOP } from "@/lib/copy";
 import {
   featureDisplayName,
   joinIso3,
@@ -19,6 +20,7 @@ import {
   type NeProperties,
 } from "@/lib/geo";
 import type { CountryRecord } from "@/lib/schema";
+import { useMedia } from "@/lib/use-media";
 import { ColorLegend } from "./ColorLegend";
 
 type WorldTopology = Topology<{
@@ -95,6 +97,12 @@ export type ChoroplethMapProps = {
   onSelect: (iso3: string) => void;
 };
 
+function mapHeight(width: number, compact: boolean): number {
+  if (width < 16) return 240;
+  if (compact) return Math.min(380, Math.max(Math.round(width * 0.78), 240));
+  return Math.max(Math.round(width * 0.52), 240);
+}
+
 export function ChoroplethMap({
   countries,
   passingIso3,
@@ -102,7 +110,9 @@ export function ChoroplethMap({
   onSelect,
 }: ChoroplethMapProps) {
   const { ref, width } = useWidth<HTMLDivElement>();
-  const height = Math.max(Math.round(width * 0.52), 240);
+  const coarsePointer = useMedia("(pointer: coarse)");
+  const compact = coarsePointer || (width > 0 && width < 640);
+  const height = mapHeight(width, compact);
   const [features, setFeatures] = useState<CountryFeature[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<{
@@ -146,35 +156,28 @@ export function ChoroplethMap({
     );
   }
 
-  return (
-    <div ref={ref} className="relative w-full" data-testid="choropleth-map">
-      {width < 16 || features == null ? (
-        <p className="text-sm text-stone-600" data-testid="map-loading">
-          Loading map…
-        </p>
-      ) : (
-        <Zoom<SVGSVGElement>
-          width={width}
-          height={height}
-          scaleXMin={1}
-          scaleXMax={12}
-          scaleYMin={1}
-          scaleYMax={12}
-        >
-          {(zoom) => (
-            <>
+  const svg = (
+    transform: string,
+    opts: {
+      svgRef?: Ref<SVGSVGElement>;
+      cursor?: string;
+      touchAction: string;
+      ignoreDragClick?: () => boolean;
+    },
+  ) => (
               <svg
                 width={width}
                 height={height}
                 viewBox={`0 0 ${width} ${height}`}
                 role="img"
                 aria-label="World map of modeled share of 15-year-olds at PISA mathematics ≥ 700"
+                data-compact={compact ? "true" : "false"}
                 style={{
-                  cursor: zoom.isDragging ? "grabbing" : "grab",
-                  touchAction: "none",
+                  cursor: opts.cursor ?? "default",
+                  touchAction: opts.touchAction,
                   display: "block",
                 }}
-                ref={zoom.containerRef}
+                ref={opts.svgRef}
                 onMouseLeave={() => setTooltip(null)}
               >
                 <defs>
@@ -218,9 +221,9 @@ export function ChoroplethMap({
                   fill="#fafaf9"
                   onMouseMove={() => setTooltip(null)}
                 />
-                <g transform={zoom.toString()}>
+                <g transform={transform}>
                   <EqualEarth<CountryFeature>
-                    data={features}
+                    data={features ?? []}
                     fitExtent={[
                       [
                         [8, 8],
@@ -228,7 +231,7 @@ export function ChoroplethMap({
                       ],
                       {
                         type: "FeatureCollection",
-                        features,
+                        features: features ?? [],
                       } as unknown as CountryFeature,
                     ]}
                   >
@@ -273,6 +276,7 @@ export function ChoroplethMap({
                                 data-fill={fill}
                                 data-hatch={hatch}
                                 onMouseMove={(event) => {
+                                  if (compact) return;
                                   const box = ref.current?.getBoundingClientRect();
                                   setTooltip({
                                     x: event.clientX - (box?.left ?? 0) + 12,
@@ -281,7 +285,7 @@ export function ChoroplethMap({
                                   });
                                 }}
                                 onClick={() => {
-                                  if (zoom.isDragging) return;
+                                  if (opts.ignoreDragClick?.()) return;
                                   onSelect(row.iso3);
                                 }}
                               />
@@ -304,13 +308,69 @@ export function ChoroplethMap({
                   </EqualEarth>
                 </g>
               </svg>
-              <button
-                type="button"
-                className="absolute top-2 right-2 rounded border border-stone-300 bg-white px-2 py-1 text-xs text-stone-800 hover:bg-stone-100"
-                onClick={() => zoom.reset()}
-              >
-                Reset map
-              </button>
+  );
+
+  return (
+    <div
+      ref={ref}
+      className="relative w-full overflow-hidden"
+      data-testid="choropleth-map"
+      data-compact={compact ? "true" : "false"}
+    >
+      {width < 16 || features == null ? (
+        <p className="text-sm text-stone-600" data-testid="map-loading">
+          Loading map…
+        </p>
+      ) : compact ? (
+        <>
+          {svg("", { touchAction: "pan-y" })}
+          <p className="mt-2 text-xs text-stone-600">{MAP_HINT_COMPACT}</p>
+        </>
+      ) : (
+        <Zoom<SVGSVGElement>
+          width={width}
+          height={height}
+          scaleXMin={1}
+          scaleXMax={12}
+          scaleYMin={1}
+          scaleYMax={12}
+        >
+          {(zoom) => (
+            <>
+              {svg(zoom.toString(), {
+                svgRef: zoom.containerRef,
+                cursor: zoom.isDragging ? "grabbing" : "grab",
+                touchAction: "none",
+                ignoreDragClick: () => zoom.isDragging,
+              })}
+              <div className="absolute top-2 right-2 flex max-w-[calc(100%-0.5rem)] flex-wrap justify-end gap-1">
+                <button
+                  type="button"
+                  className="inline-flex min-h-11 items-center rounded border border-stone-300 bg-white px-3 text-sm text-stone-800 hover:bg-stone-100"
+                  onClick={() =>
+                    zoom.scale({ scaleX: 1.25, scaleY: 1.25 })
+                  }
+                >
+                  Zoom in
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex min-h-11 items-center rounded border border-stone-300 bg-white px-3 text-sm text-stone-800 hover:bg-stone-100"
+                  onClick={() =>
+                    zoom.scale({ scaleX: 0.8, scaleY: 0.8 })
+                  }
+                >
+                  Zoom out
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex min-h-11 items-center rounded border border-stone-300 bg-white px-3 text-sm text-stone-800 hover:bg-stone-100"
+                  onClick={() => zoom.reset()}
+                >
+                  Reset map
+                </button>
+              </div>
+              <p className="sr-only">{MAP_HINT_DESKTOP}</p>
             </>
           )}
         </Zoom>

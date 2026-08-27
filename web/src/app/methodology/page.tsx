@@ -22,7 +22,7 @@ export default function MethodologyPage() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="mx-auto max-w-3xl px-4 py-10"
+      className="mx-auto max-w-3xl px-4 py-6 sm:py-10"
     >
       <h1 className="text-2xl font-semibold tracking-tight">Methodology</h1>
       <p className="mt-4 text-stone-800">
@@ -52,7 +52,8 @@ export default function MethodologyPage() {
           </span>
           . Under μ = 500 and σ = 100 this is 1 − Φ(2), labeled{" "}
           {REFERENCE_P_LABEL} in legends and on this page (quality-A cells round
-          that value to 2.3%). Python publishes <code className="font-mono text-sm">p_hat</code> in{" "}
+          that value to 2.3%). A +2 SD cutoff is a thin tail of a normal, not a
+          map of who can use AI. Python publishes <code className="font-mono text-sm">p_hat</code> in{" "}
           <code className="font-mono text-sm">atlas.json</code>; the calculator
           below recomputes the same survival function in TypeScript.
         </p>

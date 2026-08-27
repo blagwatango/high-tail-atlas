@@ -13,7 +13,7 @@ export function CaveatBanner() {
           published PISA 2022 mathematics country mean and SD (default 100), for
           15-year-olds in school. This is scholastic achievement,{" "}
           <strong>not IQ</strong>. This is <strong>not</strong> a ranking of
-          people, nations, or worth.{" "}
+          people, nations, or worth, and not a map of who can use AI.{" "}
           <Link href="/methodology/" className="font-medium underline">
             Read the methodology.
           </Link>

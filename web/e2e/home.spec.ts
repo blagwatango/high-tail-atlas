@@ -127,6 +127,40 @@ test("home copy avoids ranking chrome", async ({ page }) => {
     }),
   ).toBeVisible();
   await expect(page.getByText("not an IQ rank", { exact: false })).toBeVisible();
+  const thinTail = page.getByTestId("thin-tail-note");
+  await expect(thinTail).toContainText("thin slice");
+  await expect(thinTail).toContainText("not a map of who can use AI");
+  await expect(page.getByTestId("choropleth-map")).toContainText(
+    "+2 SD is a thin slice",
+  );
+});
+
+test("phone layout keeps the map scrollable and opens a bottom sheet", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const map = page.getByTestId("choropleth-map");
+  await expect(map).toBeVisible({ timeout: 30_000 });
+  await expect(map).toHaveAttribute("data-compact", "true");
+  await expect(
+    map.getByRole("img", {
+      name: "World map of modeled share of 15-year-olds at PISA mathematics ≥ 700",
+    }),
+  ).toHaveCSS("touch-action", "pan-y");
+  await expect(map).toContainText("One finger still scrolls the page");
+
+  const usa = page.locator('path[data-iso3="USA"][data-fill-kind="bin"]');
+  await expect(usa).toBeVisible({ timeout: 30_000 });
+  await usa.click();
+  const drawer = page.getByTestId("country-drawer");
+  await expect(drawer).toBeVisible();
+  const box = await drawer.boundingBox();
+  expect(box).toBeTruthy();
+  expect(box!.y).toBeGreaterThan(80);
+  await expect(drawer).toContainText("not a map of who can use AI");
+  await drawer.getByRole("button", { name: "Close" }).click();
+  await expect(drawer).toHaveCount(0);
 });
 
 test("CSV download is modeled estimates, not a ranking file", async ({

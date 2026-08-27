@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryStates } from "nuqs";
 import { atlasHref } from "@/lib/atlas";
+import { MAP_NOTE } from "@/lib/copy";
 import {
   compareRows,
   isDemoDataset,
@@ -140,7 +141,7 @@ export function Dashboard() {
   const line = statusLine(atlas.countries, shown);
 
   return (
-    <div className="mt-6 flex flex-col gap-6">
+    <div className="mt-6 flex flex-col gap-6 pb-8">
       <div className="flex flex-wrap items-center gap-3">
         {demo ? (
           <span
@@ -183,13 +184,13 @@ export function Dashboard() {
 
       <section
         aria-labelledby="map-heading"
-        className="rounded-md border border-stone-200 bg-white p-4"
+        className="rounded-md border border-stone-200 bg-white p-3 sm:p-4"
       >
         <h2 id="map-heading" className="text-lg font-semibold">
           {atlas.manifest.metric_label}
         </h2>
         <p className="mt-1 text-sm text-stone-600">
-          Visual overview. Keyboard path:{" "}
+          {MAP_NOTE}{" "}
           <a href="#country-table" className="underline underline-offset-2">
             country estimates table
           </a>
@@ -205,7 +206,7 @@ export function Dashboard() {
 
       <section
         aria-labelledby="lollipop-heading"
-        className="rounded-md border border-dashed border-stone-300 bg-white p-4"
+        className="rounded-md border border-dashed border-stone-300 bg-white p-3 sm:p-4"
       >
         <LollipopChart
           countries={shown}
@@ -219,7 +220,7 @@ export function Dashboard() {
         id="country-table"
         tabIndex={-1}
         aria-labelledby="table-heading"
-        className="rounded-md border border-stone-200 bg-white p-4"
+        className="rounded-md border border-stone-200 bg-white p-3 sm:p-4"
       >
         <h2 id="table-heading" className="text-lg font-semibold">
           Country estimates

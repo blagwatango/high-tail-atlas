@@ -17,6 +17,7 @@ import {
 import { COLOR_SWATCH_BORDER, REFERENCE_P, REFERENCE_P_LABEL } from "@/lib/colors";
 import { compareRows, type SortKey } from "@/lib/filters";
 import { formatPHat } from "@/lib/format";
+import { useMedia } from "@/lib/use-media";
 import {
   capLollipopRows,
   isDottedStem,
@@ -152,6 +153,7 @@ export function LollipopChart({
   onSelectIso3,
 }: LollipopChartProps) {
   const [showAll, setShowAll] = useState(false);
+  const narrow = useMedia("(max-width: 639px)");
 
   const rows = useMemo(() => {
     const mapped = toLollipopRows(countries);
@@ -185,7 +187,7 @@ export function LollipopChart({
             <button
               type="button"
               data-testid="lollipop-show-all"
-              className="mt-1 text-sm text-stone-800 underline underline-offset-2"
+              className="mt-1 inline-flex min-h-11 items-center text-sm text-stone-800 underline underline-offset-2"
               onClick={() => setShowAll((prev) => !prev)}
             >
               {showAll
@@ -198,7 +200,12 @@ export function LollipopChart({
               <ComposedChart
                 layout="vertical"
                 data={visible}
-                margin={{ top: 16, right: 36, bottom: 48, left: 120 }}
+                margin={{
+                  top: 16,
+                  right: narrow ? 16 : 36,
+                  bottom: narrow ? 72 : 48,
+                  left: narrow ? 8 : 120,
+                }}
                 barCategoryGap={8}
                 style={{ cursor: "pointer" }}
                 onClick={(state) => {
@@ -214,7 +221,9 @@ export function LollipopChart({
                   }
                   const label = state.activeLabel;
                   if (typeof label === "string") {
-                    const row = visible.find((r) => r.name === label);
+                    const row = visible.find(
+                      (r) => r.name === label || r.iso3 === label,
+                    );
                     if (row) onSelectIso3?.(row.iso3);
                   }
                 }}
@@ -223,19 +232,19 @@ export function LollipopChart({
                   type="number"
                   domain={[0, xDomainMax]}
                   tickFormatter={(v: number) => `${v}%`}
-                  height={48}
+                  height={narrow ? 64 : 48}
                   label={{
                     value: LOLLIPOP_AXIS_TITLE,
                     position: "bottom",
-                    style: { fontSize: 12, fill: "#1c1917" },
+                    style: { fontSize: narrow ? 10 : 12, fill: "#1c1917" },
                   }}
                 />
                 <YAxis
                   type="category"
-                  dataKey="name"
-                  width={110}
+                  dataKey={narrow ? "iso3" : "name"}
+                  width={narrow ? 40 : 110}
                   interval={0}
-                  tick={{ fontSize: 11, fill: "#1c1917" }}
+                  tick={{ fontSize: narrow ? 10 : 11, fill: "#1c1917" }}
                 />
                 <ReferenceLine
                   x={pPct(REFERENCE_P)}

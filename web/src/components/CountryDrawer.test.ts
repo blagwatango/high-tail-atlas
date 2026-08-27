@@ -98,11 +98,12 @@ describe("formatBandRange", () => {
 });
 
 describe("WHAT_THIS_IS_NOT", () => {
-  it("is two sentences: not a census, not a ranking of worth", () => {
-    expect(WHAT_THIS_IS_NOT).toHaveLength(2);
+  it("is not a census, not a ranking of worth, not a map of who can use AI", () => {
+    expect(WHAT_THIS_IS_NOT).toHaveLength(3);
     expect(WHAT_THIS_IS_NOT[0].toLowerCase()).toContain("not a census");
     expect(WHAT_THIS_IS_NOT[1].toLowerCase()).toContain("not a ranking");
     expect(WHAT_THIS_IS_NOT[1].toLowerCase()).toContain("worth");
+    expect(WHAT_THIS_IS_NOT[2].toLowerCase()).toContain("not a map of who can use ai");
     const joined = WHAT_THIS_IS_NOT.join(" ").toLowerCase();
     expect(joined).not.toContain("leaderboard");
     expect(joined).not.toContain("iq rankings");

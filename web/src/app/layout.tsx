@@ -45,30 +45,33 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-stone-50 text-stone-900 antialiased">
+      <body className="min-h-screen overflow-x-clip bg-stone-50 text-stone-900 antialiased">
         <NuqsAdapter>
           <SkipLinks />
           <header className="border-b border-stone-200 bg-white">
-            <div className="mx-auto flex max-w-5xl items-baseline justify-between gap-4 px-4 py-3">
-              <Link href="/" className="font-semibold tracking-tight">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 sm:py-3">
+              <Link
+                href="/"
+                className="inline-flex min-h-11 items-center font-semibold tracking-tight"
+              >
                 High-Tail Atlas
               </Link>
-              <nav className="flex gap-4 text-sm text-stone-700">
+              <nav className="flex flex-wrap items-center text-sm text-stone-700">
                 <Link
                   href="/about/"
-                  className="underline-offset-2 hover:underline"
+                  className="inline-flex min-h-11 items-center px-2 underline-offset-2 hover:underline"
                 >
                   About
                 </Link>
                 <Link
                   href="/methodology/"
-                  className="underline-offset-2 hover:underline"
+                  className="inline-flex min-h-11 items-center px-2 underline-offset-2 hover:underline"
                 >
                   Methodology
                 </Link>
                 <Link
                   href="/data/"
-                  className="underline-offset-2 hover:underline"
+                  className="inline-flex min-h-11 items-center px-2 underline-offset-2 hover:underline"
                 >
                   Data
                 </Link>

@@ -9,7 +9,7 @@ export default function AboutPage() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="mx-auto max-w-3xl px-4 py-10"
+      className="mx-auto max-w-3xl px-4 py-6 sm:py-10"
     >
       <h1 className="text-2xl font-semibold tracking-tight">About</h1>
       <p className="mt-4 text-stone-800">
@@ -23,6 +23,12 @@ export default function AboutPage() {
         Country means are the published PISA 2022 mathematics scores. Countries
         that did not sit the test stay blank. Treat every cell as a model
         output with uncertainty, not a fact about national worth.
+      </p>
+      <p className="mt-4 text-stone-800">
+        PISA 700 is +2 SD on the OECD origin scale. That tail is a thin slice
+        of a normal — about 2.28% at mean 500 — not a census of who can use
+        AI. If a claim required only people above +2 SD, the modeled share is
+        that sliver, and most countries have no estimate.
       </p>
       <h2 className="mt-8 text-lg font-semibold">What we will not build</h2>
       <ul className="mt-3 list-disc space-y-2 pl-6 text-stone-800">
